@@ -38,21 +38,31 @@ function create(obj): object | Error {
  * Used as a base class for concrete field types
  * @param name
  */
-function Field(name:string) {
-  enforceArgumentType('name', name, 'string');
-  this.name = name;
-  // functions that prove/disprove constraint compliance
-  this.tests = [];
-  // records arg values given for each constraint
-  this.constraints = {};
-  // Custom constraint hook
-  this.must = must.bind(this);
-  // Generic constraints
-  this.notNull = this.must(notNull);
-  this.defaultTo = this.must(defaultTo);
+class Field {
+  name;
+  tests;
+  constraints;
+  must;
+  notNull;
+  defaultTo;
+  _default;
+  test; 
+  constructor(name:string) {
+    enforceArgumentType('name', name, 'string');
+    this.name = name;
+    // functions that prove/disprove constraint compliance
+    this.tests = [];
+    // records arg values given for each constraint
+    this.constraints = {};
+    // Custom constraint hook
+    this.must = must.bind(this);
+    // Generic constraints
+    this.notNull = this.must(notNull);
+    this.defaultTo = this.must(defaultTo);
 
-  this._default = () => this.constraints.defaultTo || null;
-  this.test = (val=this._default()) => this.tests.forEach(c => c(name, val));
+    this._default = () => this.constraints.defaultTo || null;
+    this.test = (val=this._default()) => this.tests.forEach(c => c(name, val));
+  }
 }
 
 /**
