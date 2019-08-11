@@ -1,11 +1,11 @@
 /**
- * Models can be used to define complex data structures
- * that have logical constraints, in addition to type constraints
+ * DataShapes can be used to define data structures that
+ * have logical constraints, in addition to type constraints
  */
 
 /**
- * Models are made up of Fields, which are made up of Constraints
- * See datashape.test.ts for examples of how Datashapes are composed
+ * DataShapes  made up of Fields, which are made up of Constraints
+ * See datashape.test.ts for examples of how DataShapes are composed
  */
 export class DataShape {
   create: (object) => object | Error;
@@ -16,8 +16,8 @@ export class DataShape {
   }
 }
 /**
- * Try to create an object that conforms to a Datashape
- * Bound as a method to  `Datashape` instances
+ * Try to create an object that conforms to a `DataShape`
+ * Bound as a method to  `DataShape` instances
  */
 function create(obj): object | Error {
   let data = {};
@@ -30,7 +30,7 @@ function create(obj): object | Error {
 }
 /**
  * Assemble an array of `Field` objects as an object on `this`.
- * Bound as a construction helper to  `Datashape`
+ * Bound as a construction helper to  `DataShape`
  */
 function attachFields(...fields) {
   this.fields = {};
