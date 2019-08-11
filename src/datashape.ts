@@ -5,16 +5,20 @@
 
 /**
  * Models are made up of Fields, which are made up of Constraints
- * See datashape.test.ts for examples of how Models are composed
+ * See datashape.test.ts for examples of how Datashapes are composed
  */
+export class DataShape {
+  fields: object;
+  create: (object) => object | Error;
 
-export function DataShape(...fields) {
-  this.fields = {}
-  fields.forEach(f => {
-    const { name, test, tests, constraints } = f;
-    this.fields[name] = { test, tests, constraints };
-  });
-  this.create = create.bind(this);
+  constructor(...fields) {
+    this.fields = {}
+    fields.forEach(f => {
+      const { name, test, tests, constraints } = f;
+      this.fields[name] = { test, tests, constraints };
+    });
+    this.create = create.bind(this);
+  }
 }
 /**
  * Try to create an object that conforms to a Datashape
@@ -134,11 +138,9 @@ function must(fn) {
     return this;
   }
 }
-
 /**
  * String Field
  */
-
 export function string(name) {
   let f: any = new Field(name);
   f.constraints.type = 'string'
@@ -150,11 +152,9 @@ export function string(name) {
   f.numeric = f.must(numeric)
   return f;
 }
-
 /**
  * Integer Field
  */
-
 export function integer(name) {
   let f: any = new Field(name);
   f.constraints.type = 'integer';
@@ -165,18 +165,18 @@ export function integer(name) {
   f.range = f.must(range);
   return f;
 }
-
 /**
- * Integer Field
+ * Boolean Field
  */
-
 export function boolean(name) {
   let f: any = new Field(name);
   f.constraints.type = 'boolean';
   f.must(beBooleanFieldType)();
   return f;
 }
-
+/**
+ * Helper Functions
+ */
 function enforceArgumentType(name, arg, type) {
   if (typeof arg !== type)
   throw new Error(`Argument "${name}" must be of type ${type}. Received type ${typeof arg}`);
