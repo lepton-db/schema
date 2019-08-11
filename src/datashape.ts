@@ -123,15 +123,9 @@ const beBooleanFieldType = () => (name, val) => {
   if (val != null && typeof val != 'boolean')
   throw new Error(`${name} must be a boolean. Received ${typeof val}`);
 }
-
-/**
- * The constrain function attached to every field type
- * which allows custom arbitrary constraints
- */
-
 /**
  * The must function attached to every field type
- * which allows custom arbitrary constraints that take an argument
+ * which allows custom arbitrary constraints argument
  */
 function must(fn) {
   return (arg=true) => {
