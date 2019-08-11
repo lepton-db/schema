@@ -1,0 +1,26 @@
+{
+  "name": "@node-scarlet/datashape",
+  "version": "0.0.0",
+  "description": "Super flexible validation for primitive data structures",
+  "main": "dist/datashape.js",
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "npx tsc",
+    "test": "ts-node src/test.ts",
+    "watch": "nodemon --ext .ts --exec 'npm run test'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/node-scarlet/datashape.git"
+  },
+  "keywords": [],
+  "author": "craig fay",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^12.6.8",
+    "nodemon": "^1.19.1"
+  },
+  "dependencies": {
+    "typescript": "^3.5.3"
+  }
+}
