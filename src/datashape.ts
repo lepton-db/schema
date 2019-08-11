@@ -8,16 +8,11 @@
  * See datashape.test.ts for examples of how Datashapes are composed
  */
 export class DataShape {
-  fields: object;
   create: (object) => object | Error;
-
+  fields: object;
   constructor(...fields) {
-    this.fields = {}
-    fields.forEach(f => {
-      const { name, test, tests, constraints } = f;
-      this.fields[name] = { test, tests, constraints };
-    });
     this.create = create.bind(this);
+    attachFields.bind(this)(...fields);
   }
 }
 /**
@@ -33,7 +28,17 @@ function create(obj): object | Error {
   }
   return data
 }
-
+/**
+ * Assemble an array of `Field` objects as an object on `this`.
+ * Bound as a construction helper to  `Datashape`
+ */
+function attachFields(...fields) {
+  this.fields = {};
+  fields.forEach(f => {
+    const { name, test, tests, constraints } = f;
+    this.fields[name] = { test, tests, constraints };
+  });
+}
 /**
  * Used as a base class for concrete field types
  * @param name
