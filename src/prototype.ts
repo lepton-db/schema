@@ -57,15 +57,32 @@ const alphabetical = arg => (name, val) => {
   return val;
 }
 
+const numeric = () => (name, val) => {
+  if (false == /^\d+$/.test(val))
+  return new Error(`${name} must only use numeric characters`);
+  return val;
+}
+
+// https://www.regular-expressions.info/email.html
+const email = () => (name, val) => {
+  const pattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/
+  if (false == pattern.test(val))
+  return new Error(`${name} must be an email address`);
+  return val;
+}
+
+
 class String extends Field {
   minLength;
   maxLength;
   alphabetical;
+  numeric;
   constructor(name) {
     super(name);
     this.must(beStringFieldType)();
     this.minLength = this.must(minLength);
     this.maxLength = this.must(maxLength);
     this.alphabetical = this.must(alphabetical);
+    this.numeric = this.must(numeric);
   }
 }

@@ -13,8 +13,8 @@ export const tests = [
   stringFieldMinLengthTest,
   stringFieldMaxLengthTest,
   stringFieldAlphabeticalTest,
+  stringFieldNumericTest,
   // stringFieldMustTest,
-  // stringFieldNumericTest,
   // stringFieldChainableConstraintsTest,
   // integerFieldCreationTest,
   // integerFieldNotNullTest,
@@ -108,7 +108,6 @@ function stringFieldAlphabeticalTest() {
   applied to string fields, which can be checked with
   field.test()`;
   try {
-
     let field = string('droid');
     assert.equal(field.test('c3po'), true);
     field.alphabetical();
@@ -118,24 +117,20 @@ function stringFieldAlphabeticalTest() {
   }
 }
 
-// function stringFieldNumericTest() {
-//   const description = `a numeric constraint can be
-//   applied to string fields, which can be checked with
-//   field.test()`;
+function stringFieldNumericTest() {
+  const description = `a numeric constraint can be
+  applied to string fields, which can be checked with
+  field.test()`;
 
-//   try {
-//     let field = string('uuid');
-//     assert.doesNotThrow(() => field.test('Scooby Doo'));
-    
-//     field.numeric();
-//     assert.throws(
-//       () => field.test('Scooby Doo'),
-//       { message: 'uuid must only use numeric characters' }
-//     );
-//   } catch (e) {
-//     return e;
-//   }
-// }
+  try {
+    let field = string('droid');
+    assert.equal(field.test('r2d2'), true);
+    field.numeric();
+    assert.equal(field.test('r2d2'), false);
+  } catch (e) {
+    return e;
+  }
+}
 
 // function stringFieldMustTest() {
 //   const description = `an arbitrary constraint function
@@ -436,4 +431,3 @@ function stringFieldAlphabeticalTest() {
 //     return e;
 //   }
 // }
-
