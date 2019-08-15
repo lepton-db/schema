@@ -71,7 +71,6 @@ const email = () => (name, val) => {
   return val;
 }
 
-
 class String extends Field {
   minLength;
   maxLength;

@@ -15,7 +15,7 @@ export const tests = [
   stringFieldAlphabeticalTest,
   stringFieldNumericTest,
   stringFieldMustTest,
-  // stringFieldChainableConstraintsTest,
+  stringFieldChainableConstraintsTest,
   // integerFieldCreationTest,
   // integerFieldNotNullTest,
   // integerFieldNotNegativeTest,
@@ -136,11 +136,11 @@ function stringFieldMustTest() {
   const description = `an arbitrary constraint function
   can be applied to string fields that accepts an arg, and
   can be checked with field.test()`;
-
   try {
     let field = string('password');
     assert.equal(field.test('try_and_break_this'), true);
 
+    // Custom constraint
     const include = arg => (name, val) => {
       if (!val.includes(arg))
       return new Error(`${name} must contain "${arg}"`);
@@ -148,33 +148,28 @@ function stringFieldMustTest() {
     }
 
     field.must(include)('!');
-    assert.equal(
-      field.test('try_and_break_this'),
-      false,
-    );
+    assert.equal(field.test('try_and_break_this'), false);
   } catch (e) {
     return e;
   }
 }
 
-// function stringFieldChainableConstraintsTest() {
-//   const description = `all constraints available to string
-//   fields are chainable`;
-
-//   try {
-//     assert.doesNotThrow(() => {
-//       let field = string('mission')
-//       .notNull()
-//       .minLength(8)
-//       .maxLength(32)
-//       .alphabetical()
-//       .must(x => x)
-//     });
-
-//   } catch (e) {
-//     return e;
-//   }
-// }
+function stringFieldChainableConstraintsTest() {
+  const description = `all constraints available to string
+  fields are chainable`;
+  try {
+    assert.doesNotThrow(() => {
+      let field = string('mission')
+      .notNull()
+      .minLength(8)
+      .maxLength(32)
+      .alphabetical()
+      .must(x => x)
+    });
+  } catch (e) {
+    return e;
+  }
+}
 
 // function integerFieldCreationTest() {
 //   const description = `integer fields can be created
