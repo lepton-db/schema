@@ -11,7 +11,7 @@ export const tests = [
   stringFieldTypeTest,
   stringFieldNotNullTest,
   stringFieldMinLengthTest,
-  // stringFieldMaxLengthTest,
+  stringFieldMaxLengthTest,
   // stringFieldAlphabeticalTest,
   // stringFieldMustTest,
   // stringFieldNumericTest,
@@ -88,26 +88,20 @@ function stringFieldMinLengthTest() {
   }
 }
 
-// function stringFieldMaxLengthTest() {
-//   const description = `a maxLength constraint can be
-//   applied to string fields, which can be checked with
-//   field.test()`;
+function stringFieldMaxLengthTest() {
+  const description = `a maxLength constraint can be
+  applied to string fields, which can be checked with
+  field.test()`;
 
-//   try {
-//     // Without a maxLength requirement, a value of any length will be accepted by the string field
-//     let field = string('catchphrase');
-//     assert.doesNotThrow(() => field.test('howdy partner'));
-    
-//     // After applying maxLength constraint, the field will not accept the same value
-//     field.maxLength(5);
-//     assert.throws(
-//       () => field.test('howdy partner'),
-//       { message: 'catchphrase has a max length of 5' }
-//     );
-//   } catch (e) {
-//     return e;
-//   }
-// }
+  try {
+    let field = string('greeting');
+    assert.equal(field.test('howdy partner'), true);
+    field.maxLength(5);
+    assert.equal(field.test('howdy partner'), false);
+  } catch (e) {
+    return e;
+  }
+}
 
 // function stringFieldAlphabeticalTest() {
 //   const description = `an alphabetical constraint can be

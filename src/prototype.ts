@@ -45,11 +45,19 @@ const minLength = arg => (name, val) => {
   return val;
 }
 
+const maxLength = arg => (name, val) => {
+  if (!val || val.length > arg)
+  return new Error(`${name} has a max length of ${arg}`)
+  return val;
+}
+
 class String extends Field {
   minLength;
+  maxLength;
   constructor(name) {
     super(name);
     this.must(beStringFieldType)();
     this.minLength = this.must(minLength);
+    this.maxLength = this.must(maxLength);
   }
 }
