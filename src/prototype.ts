@@ -106,6 +106,7 @@ const notNegative = () => (name, val) => {
 const notZero = () => (name, val) => {
   if (val == 0)
   return new Error(`${name} must not be 0`)
+  return val;
 }
 
 const range = (arg) => (name, val) => {
@@ -118,12 +119,11 @@ const range = (arg) => (name, val) => {
 
 class Integer extends Field {
   notNegative;
+  notZero;
   constructor(name) {
     super(name);
     this.must(beIntegerFieldType)();
     this.notNegative = this.must(notNegative);
-    // this.maxLength = this.must(maxLength);
-    // this.alphabetical = this.must(alphabetical);
-    // this.numeric = this.must(numeric);
+    this.notZero = this.must(notZero);
   }
 }

@@ -19,7 +19,7 @@ export const tests = [
   integerFieldCreationTest,
   integerFieldNotNullTest,
   integerFieldNotNegativeTest,
-  // integerFieldNotZeroTest,
+  integerFieldNotZeroTest,
   // integerFieldRangeTest,
   // integerFieldMustTest,
   // integerFieldChainableConstraintsTest,
@@ -204,7 +204,6 @@ function integerFieldNotNegativeTest() {
   const description = `a notNegative constraint can be
   applied to integer fields, which can be checked with
   field.test()`;
-
   try {
     let field = integer('debt');
     assert.equal(field.test(-5), true);
@@ -215,24 +214,19 @@ function integerFieldNotNegativeTest() {
   }
 }
 
-// function integerFieldNotZeroTest() {
-//   const description = `a notZero constraint can be
-//   applied to integer fields, which can be checked with
-//   field.test()`;
-
-//   try {
-//     let field = integer('debt');
-//     assert.doesNotThrow(() => field.test(0));
-    
-//     field.notZero();
-//     assert.throws(
-//       () => field.test(0),
-//       { message: 'debt must not be 0' }
-//     );
-//   } catch (e) {
-//     return e;
-//   }
-// }
+function integerFieldNotZeroTest() {
+  const description = `a notZero constraint can be
+  applied to integer fields, which can be checked with
+  field.test()`;
+  try {
+    let field = integer('debt');
+    assert.equal(field.test(0), true);
+    field.notZero();
+    assert.equal(field.test(0), false);
+  } catch (e) {
+    return e;
+  }
+}
 
 // function integerFieldRangeTest() {
 //   const description = `a range constraint can be
