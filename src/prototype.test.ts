@@ -22,7 +22,7 @@ export const tests = [
   integerFieldNotZeroTest,
   integerFieldRangeTest,
   integerFieldMustTest,
-  // integerFieldChainableConstraintsTest,
+  integerFieldChainableConstraintsTest,
   // booleanFieldCreationTest,
   // booleanFieldNotNullTest,
   // booleanFieldMustTest,
@@ -159,12 +159,12 @@ function stringFieldChainableConstraintsTest() {
   fields are chainable`;
   try {
     assert.doesNotThrow(() => {
-      let field = string('mission')
-      .notNull()
-      .minLength(8)
-      .maxLength(32)
-      .alphabetical()
-      .must(x => x)
+      string('mission')
+        .notNull()
+        .minLength(8)
+        .maxLength(32)
+        .alphabetical()
+        .must(x => x)
     });
   } catch (e) {
     return e;
@@ -263,22 +263,21 @@ function integerFieldMustTest() {
   }
 }
 
-// function integerFieldChainableConstraintsTest() {
-//   const description = `all constraints available to integer
-//   fields are chainable`;
-
-//   try {
-//     assert.doesNotThrow(() => {
-//       let field = integer('goal')
-//       .notNull()
-//       .notNegative()
-//       .notZero()
-//       .must(x => x)
-//     });
-//   } catch (e) {
-//     return e;
-//   }
-// }
+function integerFieldChainableConstraintsTest() {
+  const description = `all constraints available to integer
+  fields are chainable`;
+  try {
+    assert.doesNotThrow(() => {
+      integer('goal')
+        .notNull()
+        .notNegative()
+        .notZero()
+        .must(x => x)
+    });
+  } catch (e) {
+    return e;
+  }
+}
 
 // function booleanFieldCreationTest() {
 //   const description = `boolean fields can be created
