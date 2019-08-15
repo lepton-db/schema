@@ -21,22 +21,40 @@ class Field {
   test(val?): boolean {
     let result = val;
     for (const constraint of this.constraints) {
+      console.log('contraint:', constraint.toString())
       result = constraint(this.name, result);
+      console.log('result:',result)
       if (result instanceof Error) return false;
     }
     return true;
   }
-  must(fn: (arg) => any) {
-    return (arg=true) => {
+  must(fn: (arg?) => any) {
+    return (arg?) => {
       this.constraints.push(fn(arg))
       return this;
     }
   }
 }
 
+const beStringFieldType = () => (name, val=null) => {
+  console.log('val:', val)
+  console.log(val != null);
+  console.log(typeof val != 'string');
+  if (val !== null && typeof val != 'string')
+  return new Error(`${name} must be a string. Received ${typeof val}`);
+  return val;
+}
+const minLength = arg => (name, val) => {
+  if (val.length < arg)
+  return new Error(`${name} has a min length of ${arg}`)
+  return val;
+}
+
 class String extends Field {
+  minLength;
   constructor(name) {
     super(name);
-    // ...
+    this.must(beStringFieldType)();
+    this.minLength = this.must(minLength);
   }
 }

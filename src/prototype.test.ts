@@ -8,8 +8,9 @@ import {
 
 export const tests = [
   stringFieldCreationTest,
+  stringFieldTypeTest,
   stringFieldNotNullTest,
-  // stringFieldMinLengthTest,
+  stringFieldMinLengthTest,
   // stringFieldMaxLengthTest,
   // stringFieldAlphabeticalTest,
   // stringFieldMustTest,
@@ -32,11 +33,26 @@ export const tests = [
 function stringFieldCreationTest() {
   const description = `string fields can be created
   and posess the expected properties`;
-
   try {
     let field = string('catchphrase');
     assert(field.name == 'catchphrase');
     assert(Array.isArray(field.constraints));
+    assert(typeof field.test == 'function');
+  } catch (e) {
+    return e;
+  }
+}
+
+function stringFieldTypeTest() {
+  const description = `string fields will not
+  accept non-string values`;
+  try {
+    let field = string('sentence');
+    assert.equal(field.test(5), false);
+    assert.equal(field.test({ type: 'string' }), false);
+    assert.equal(field.test(), true);
+    assert.equal(field.test(null), true);
+    assert.equal(field.test(''), true);
   } catch (e) {
     return e;
   }
@@ -50,38 +66,27 @@ function stringFieldNotNullTest() {
   try {
     let field = string('catchphrase');
     assert.equal(field.test(), true);
-    
     field.notNull();
-
     assert.equal(field.test(), false);
-
   } catch (e) {
     return e;
   }
 }
 
-// function stringFieldMinLengthTest() {
-//   const description = `a minLength constraint can be
-//   applied to string fields, which can be checked with
-//   field.test()`;
+function stringFieldMinLengthTest() {
+  const description = `a minLength constraint can be
+  applied to string fields, which can be checked with
+  field.test()`;
 
-//   try {
-//     // Without a minLength requirement, a value of any length will be accepted by the string field
-//     let field = string('catchphrase');
-//     assert.ok(field.test(''));
-    
-//     // After applying minLength constraint, the field will not accept the same value
-//     field.minLength(5);
-
-//     assert.ok(field.test() instanceof Error);
-//     assert.equal(
-//       field.test('').message,
-//       'catchphrase has a min length of 5'
-//     );
-//   } catch (e) {
-//     return e;
-//   }
-// }
+  try {
+    let field = string('uuid');
+    assert.equal(field.test(), true);
+    field.minLength(4);
+    assert.equal(field.test(), false);
+  } catch (e) {
+    return e;
+  }
+}
 
 // function stringFieldMaxLengthTest() {
 //   const description = `a maxLength constraint can be
