@@ -14,7 +14,7 @@ export const tests = [
   stringFieldMaxLengthTest,
   stringFieldAlphabeticalTest,
   stringFieldNumericTest,
-  // stringFieldMustTest,
+  stringFieldMustTest,
   // stringFieldChainableConstraintsTest,
   // integerFieldCreationTest,
   // integerFieldNotNullTest,
@@ -132,29 +132,30 @@ function stringFieldNumericTest() {
   }
 }
 
-// function stringFieldMustTest() {
-//   const description = `an arbitrary constraint function
-//   can be applied to string fields that accepts an arg, and
-//   can be checked with field.test()`;
+function stringFieldMustTest() {
+  const description = `an arbitrary constraint function
+  can be applied to string fields that accepts an arg, and
+  can be checked with field.test()`;
 
-//   try {
-//     let field = string('password');
-//     assert.doesNotThrow(() => field.test('try_and_break_this'));
+  try {
+    let field = string('password');
+    assert.equal(field.test('try_and_break_this'), true);
 
-//     const include = arg => (name, val) => {
-//       if (!val.includes(arg))
-//       return new Error(`${name} must contain "${arg}"`);
-//     }
+    const include = arg => (name, val) => {
+      if (!val.includes(arg))
+      return new Error(`${name} must contain "${arg}"`);
+      return val;
+    }
 
-//     field.must(include)('!');
-//     assert.throws(
-//       () => field.test('try_and_break_this'),
-//       { message: 'password must contain "!"' }
-//     );
-//   } catch (e) {
-//     return e;
-//   }
-// }
+    field.must(include)('!');
+    assert.equal(
+      field.test('try_and_break_this'),
+      false,
+    );
+  } catch (e) {
+    return e;
+  }
+}
 
 // function stringFieldChainableConstraintsTest() {
 //   const description = `all constraints available to string
