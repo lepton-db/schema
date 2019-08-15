@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import {
   string,
   integer,
-  // boolean,
+  boolean,
   // DataShape
 } from './prototype';
 
@@ -23,7 +23,7 @@ export const tests = [
   integerFieldRangeTest,
   integerFieldMustTest,
   integerFieldChainableConstraintsTest,
-  // booleanFieldCreationTest,
+  booleanFieldCreationTest,
   // booleanFieldNotNullTest,
   // booleanFieldMustTest,
   // booleanFieldChainableConstraintsTest,
@@ -279,18 +279,18 @@ function integerFieldChainableConstraintsTest() {
   }
 }
 
-// function booleanFieldCreationTest() {
-//   const description = `boolean fields can be created
-//   and posess the expected properties`;
-
-//   try {
-//     let field = boolean('freeShipping');
-//     assert(field.name == 'freeShipping');
-//     assert(Array.isArray(field.tests));
-//   } catch (e) {
-//     return e;
-//   }
-// }
+function booleanFieldCreationTest() {
+  const description = `boolean fields can be created
+  and posess the expected properties`;
+  try {
+    let field = boolean('freeShipping');
+    assert(field.name == 'freeShipping');
+    assert(Array.isArray(field.constraints));
+    assert(typeof field.test == 'function');
+  } catch (e) {
+    return e;
+  }
+}
 
 // function booleanFieldNotNullTest() {
 //   const description = `a notNull constraint can be

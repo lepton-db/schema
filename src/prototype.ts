@@ -7,6 +7,10 @@ export function integer(name) {
   return new Integer(name);
 }
 
+export function boolean(name) {
+  return new Boolean(name);
+}
+
 const notNull = () => (name, val) => {
   if (val == null)
   return new Error(`${name} must not be null`);
@@ -125,5 +129,18 @@ class Integer extends Field {
     this.notNegative = this.must(notNegative);
     this.notZero = this.must(notZero);
     this.range = this.must(range);
+  }
+}
+
+const beBooleanFieldType = () => (name, val=null) => {
+  if (val !== null && typeof val == 'boolean')
+  return new Error(`${name} must be a boolean. Received ${typeof val}`);
+  return val;
+}
+
+class Boolean extends Field {
+  constructor(name) {
+    super(name);
+    this.must(beBooleanFieldType)();
   }
 }
