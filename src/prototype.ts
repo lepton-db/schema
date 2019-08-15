@@ -3,6 +3,10 @@ export function string(name) {
   return new String(name);
 }
 
+export function integer(name) {
+  return new Integer(name);
+}
+
 const notNull = () => (name, val) => {
   if (val == null)
   return new Error(`${name} must not be null`);
@@ -39,6 +43,7 @@ const beStringFieldType = () => (name, val=null) => {
   return new Error(`${name} must be a string. Received ${typeof val}`);
   return val;
 }
+
 const minLength = arg => (name, val) => {
   if (!val || val.length < arg)
   return new Error(`${name} has a min length of ${arg}`)
@@ -83,5 +88,22 @@ class String extends Field {
     this.maxLength = this.must(maxLength);
     this.alphabetical = this.must(alphabetical);
     this.numeric = this.must(numeric);
+  }
+}
+
+const beIntegerFieldType = () => (name, val=null) => {
+  if (val !== null && !Number.isInteger(val))
+  return new Error(`${name} must be an integer. Received ${typeof val}`);
+  return val;
+}
+
+class Integer extends Field {
+  constructor(name) {
+    super(name);
+    this.must(beIntegerFieldType)();
+    // this.minLength = this.must(minLength);
+    // this.maxLength = this.must(maxLength);
+    // this.alphabetical = this.must(alphabetical);
+    // this.numeric = this.must(numeric);
   }
 }

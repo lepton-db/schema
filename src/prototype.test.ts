@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import {
   string,
-  // integer,
+  integer,
   // boolean,
   // DataShape
 } from './prototype';
@@ -16,7 +16,7 @@ export const tests = [
   stringFieldNumericTest,
   stringFieldMustTest,
   stringFieldChainableConstraintsTest,
-  // integerFieldCreationTest,
+  integerFieldCreationTest,
   // integerFieldNotNullTest,
   // integerFieldNotNegativeTest,
   // integerFieldNotZeroTest,
@@ -171,18 +171,19 @@ function stringFieldChainableConstraintsTest() {
   }
 }
 
-// function integerFieldCreationTest() {
-//   const description = `integer fields can be created
-//   and posess the expected properties`;
+function integerFieldCreationTest() {
+  const description = `integer fields can be created
+  and posess the expected properties`;
 
-//   try {
-//     let field = integer('salary');
-//     assert(field.name == 'salary');
-//     assert(Array.isArray(field.tests));
-//   } catch (e) {
-//     return e;
-//   }
-// }
+  try {
+    let field = integer('salary');
+    assert(field.name == 'salary');
+    assert(Array.isArray(field.constraints));
+    assert(typeof field.must == 'function');
+  } catch (e) {
+    return e;
+  }
+}
 
 // function integerFieldNotNullTest() {
 //   const description = `a notNull constraint can be
