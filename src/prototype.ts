@@ -51,13 +51,21 @@ const maxLength = arg => (name, val) => {
   return val;
 }
 
+const alphabetical = arg => (name, val) => {
+  if (false == /^[a-zA-Z]+$/.test(val))
+  return new Error(`${name} must only use alphabetical characters`);
+  return val;
+}
+
 class String extends Field {
   minLength;
   maxLength;
+  alphabetical;
   constructor(name) {
     super(name);
     this.must(beStringFieldType)();
     this.minLength = this.must(minLength);
     this.maxLength = this.must(maxLength);
+    this.alphabetical = this.must(alphabetical);
   }
 }

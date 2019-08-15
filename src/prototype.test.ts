@@ -12,7 +12,7 @@ export const tests = [
   stringFieldNotNullTest,
   stringFieldMinLengthTest,
   stringFieldMaxLengthTest,
-  // stringFieldAlphabeticalTest,
+  stringFieldAlphabeticalTest,
   // stringFieldMustTest,
   // stringFieldNumericTest,
   // stringFieldChainableConstraintsTest,
@@ -103,24 +103,20 @@ function stringFieldMaxLengthTest() {
   }
 }
 
-// function stringFieldAlphabeticalTest() {
-//   const description = `an alphabetical constraint can be
-//   applied to string fields, which can be checked with
-//   field.test()`;
+function stringFieldAlphabeticalTest() {
+  const description = `an alphabetical constraint can be
+  applied to string fields, which can be checked with
+  field.test()`;
+  try {
 
-//   try {
-//     let field = string('catchphrase');
-//     assert.doesNotThrow(() => field.test('Blink 182'));
-    
-//     field.alphabetical();
-//     assert.throws(
-//       () => field.test('Blink 182'),
-//       { message: 'catchphrase must only use alphabetical characters' }
-//     );
-//   } catch (e) {
-//     return e;
-//   }
-// }
+    let field = string('droid');
+    assert.equal(field.test('c3po'), true);
+    field.alphabetical();
+    assert.equal(field.test('c3po'), false);
+  } catch (e) {
+    return e;
+  }
+}
 
 // function stringFieldNumericTest() {
 //   const description = `a numeric constraint can be
