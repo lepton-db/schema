@@ -36,7 +36,7 @@ function stringFieldCreationTest() {
   try {
     let field = string('catchphrase');
     assert(field.name == 'catchphrase');
-    assert(Array.isArray(field.tests));
+    assert(Array.isArray(field.constraints));
   } catch (e) {
     return e;
   }
@@ -49,15 +49,11 @@ function stringFieldNotNullTest() {
 
   try {
     let field = string('catchphrase');
-    assert.ok(field.test());
+    assert.equal(field.test(), true);
     
     field.notNull();
 
-    assert.ok(field.test() instanceof Error)
-    assert.equal(
-      field.test().message,
-      'catchphrase must not be null',
-    );
+    assert.equal(field.test(), false);
 
   } catch (e) {
     return e;
