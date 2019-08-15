@@ -97,11 +97,31 @@ const beIntegerFieldType = () => (name, val=null) => {
   return val;
 }
 
+const notNegative = () => (name, val) => {
+  if (val < 0)
+  return new Error(`${name} must not be negative`)
+  return val;
+}
+
+const notZero = () => (name, val) => {
+  if (val == 0)
+  return new Error(`${name} must not be 0`)
+}
+
+const range = (arg) => (name, val) => {
+  const [min, max] = arg;
+  if (val < min || val > max)
+  return new Error(`${name} must be between ${min} and ${max}`)
+}
+
+
+
 class Integer extends Field {
+  notNegative;
   constructor(name) {
     super(name);
     this.must(beIntegerFieldType)();
-    // this.minLength = this.must(minLength);
+    this.notNegative = this.must(notNegative);
     // this.maxLength = this.must(maxLength);
     // this.alphabetical = this.must(alphabetical);
     // this.numeric = this.must(numeric);

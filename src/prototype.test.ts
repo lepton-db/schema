@@ -18,7 +18,7 @@ export const tests = [
   stringFieldChainableConstraintsTest,
   integerFieldCreationTest,
   integerFieldNotNullTest,
-  // integerFieldNotNegativeTest,
+  integerFieldNotNegativeTest,
   // integerFieldNotZeroTest,
   // integerFieldRangeTest,
   // integerFieldMustTest,
@@ -200,24 +200,20 @@ function integerFieldNotNullTest() {
   }
 }
 
-// function integerFieldNotNegativeTest() {
-//   const description = `a notNegative constraint can be
-//   applied to integer fields, which can be checked with
-//   field.test()`;
+function integerFieldNotNegativeTest() {
+  const description = `a notNegative constraint can be
+  applied to integer fields, which can be checked with
+  field.test()`;
 
-//   try {
-//     let field = integer('debt');
-//     assert.doesNotThrow(() => field.test(-5));
-    
-//     field.notNegative();
-//     assert.throws(
-//       () => field.test(-5),
-//       { message: 'debt must not be negative' }
-//     );
-//   } catch (e) {
-//     return e;
-//   }
-// }
+  try {
+    let field = integer('debt');
+    assert.equal(field.test(-5), true);
+    field.notNegative();
+    assert.equal(field.test(-5), false);
+  } catch (e) {
+    return e;
+  }
+}
 
 // function integerFieldNotZeroTest() {
 //   const description = `a notZero constraint can be
