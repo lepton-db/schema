@@ -5,7 +5,8 @@ export function string(name) {
 
 const notNull = () => (name, val) => {
   if (val == null)
-  throw new Error(`${name} must not be null`);
+  return new Error(`${name} must not be null`);
+  return val;
 }
 
 class Field {
@@ -17,7 +18,12 @@ class Field {
     this.constraints = [];
     this.notNull = this.must(notNull);
   }
-  test(): boolean {
+  test(val?): boolean {
+    let result = val;
+    for (const constraint of this.constraints) {
+      result = constraint(this.name, result);
+      if (result instanceof Error) return false;
+    }
     return true;
   }
   must(fn: (arg) => any) {
