@@ -21,7 +21,7 @@ export const tests = [
   integerFieldNotNegativeTest,
   integerFieldNotZeroTest,
   integerFieldRangeTest,
-  // integerFieldMustTest,
+  integerFieldMustTest,
   // integerFieldChainableConstraintsTest,
   // booleanFieldCreationTest,
   // booleanFieldNotNullTest,
@@ -242,29 +242,26 @@ function integerFieldRangeTest() {
   }
 }
 
-// function integerFieldMustTest() {
-//   const description = `an arbitrary constraint function
-//   can be applied to integer fields that accepts an arg, and
-//   can be checked with field.test()`;
+function integerFieldMustTest() {
+  const description = `an arbitrary constraint function
+  can be applied to integer fields that accepts an arg, and
+  can be checked with field.test()`;
+  try {
+    let field = integer('repetitions');
+    assert.equal(field.test(7), true);
 
-//   try {
-//     let field = integer('repetitions');
-//     assert.doesNotThrow(() => field.test(7));
-
-//     const divideBy = arg => (name, val) => {
-//       if (val % arg != 0)
-//       return new Error(`${name} must be divisible by ${arg}`);
-//     }
-    
-//     field.must(divideBy)(4);
-//     assert.throws(
-//       () => field.test(7),
-//       { message: 'repetitions must be divisible by 4' }
-//     );
-//   } catch (e) {
-//     return e;
-//   }
-// }
+    // Custom constraint
+    const divideBy = arg => (name, val) => {
+      if (val % arg != 0)
+      return new Error(`${name} must be divisible by ${arg}`);
+      return val;
+    }
+    field.must(divideBy)(4);
+    assert.equal(field.test(7), false);
+  } catch (e) {
+    return e;
+  }
+}
 
 // function integerFieldChainableConstraintsTest() {
 //   const description = `all constraints available to integer
