@@ -20,7 +20,7 @@ export const tests = [
   integerFieldNotNullTest,
   integerFieldNotNegativeTest,
   integerFieldNotZeroTest,
-  // integerFieldRangeTest,
+  integerFieldRangeTest,
   // integerFieldMustTest,
   // integerFieldChainableConstraintsTest,
   // booleanFieldCreationTest,
@@ -228,24 +228,19 @@ function integerFieldNotZeroTest() {
   }
 }
 
-// function integerFieldRangeTest() {
-//   const description = `a range constraint can be
-//   applied to integer fields, which can be checked with
-//   field.test()`;
-
-//   try {
-//     let field = integer('month');
-//     assert.doesNotThrow(() => field.test(0));
-    
-//     field.range([1, 12]);
-//     assert.throws(
-//       () => field.test(0),
-//       { message: 'month must be between 1 and 12' }
-//     );
-//   } catch (e) {
-//     return e;
-//   }
-// }
+function integerFieldRangeTest() {
+  const description = `a range constraint can be
+  applied to integer fields, which can be checked with
+  field.test()`;
+  try {
+    let field = integer('month');
+    assert.equal(field.test(0), true);
+    field.range([1, 2]);
+    assert.equal(field.test(0), false);
+  } catch (e) {
+    return e;
+  }
+}
 
 // function integerFieldMustTest() {
 //   const description = `an arbitrary constraint function

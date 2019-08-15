@@ -115,15 +115,15 @@ const range = (arg) => (name, val) => {
   return new Error(`${name} must be between ${min} and ${max}`)
 }
 
-
-
 class Integer extends Field {
   notNegative;
   notZero;
+  range;
   constructor(name) {
     super(name);
     this.must(beIntegerFieldType)();
     this.notNegative = this.must(notNegative);
     this.notZero = this.must(notZero);
+    this.range = this.must(range);
   }
 }
