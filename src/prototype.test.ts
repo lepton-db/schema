@@ -3,7 +3,7 @@ import {
   string,
   integer,
   boolean,
-  // DataShape
+  DataShape
 } from './prototype';
 
 export const tests = [
@@ -24,9 +24,9 @@ export const tests = [
   integerFieldMustTest,
   integerFieldChainableConstraintsTest,
   booleanFieldCreationTest,
-  // booleanFieldNotNullTest,
-  // booleanFieldMustTest,
-  // booleanFieldChainableConstraintsTest,
+  booleanFieldNotNullTest,
+  booleanFieldMustTest,
+  booleanFieldChainableConstraintsTest,
   // dataShapeCreationTest,
 ];
 
@@ -292,74 +292,66 @@ function booleanFieldCreationTest() {
   }
 }
 
-// function booleanFieldNotNullTest() {
-//   const description = `a notNull constraint can be
-//   applied to boolean fields, which can be checked with
-//   field.test()`;
+function booleanFieldNotNullTest() {
+  const description = `a notNull constraint can be
+  applied to boolean fields, which can be checked with
+  field.test()`;
+  try {
+    let field = boolean('oldEnough');
+    assert.equal(field.test(), true);
+    field.notNull();
+    assert.equal(field.test(), false);
+  } catch (e) {
+    return e;
+  }
+}
 
-//   try {
-//     let field = boolean('oldEnough');
-//     assert.doesNotThrow(() => field.test());
-    
-//     field.notNull();
-//     assert.throws(
-//       () => field.test(),
-//       { message: 'oldEnough must not be null' }
-//     );
-//   } catch (e) {
-//     return e;
-//   }
-// }
+function booleanFieldMustTest() {
+  const description = `an arbitrary constraint function
+  can be applied to boolean fields that accepts an arg, and
+  can be checked with field.test()`;
+  try {
+    let field = boolean('lucky');
+    assert.equal(field.test(true), true);
 
-// function booleanFieldMustTest() {
-//   const description = `an arbitrary constraint function
-//   can be applied to boolean fields that accepts an arg, and
-//   can be checked with field.test()`;
+    const beTrueAnd = arg => (name, val) => {
+      if (!(arg && val)) 
+      return new Error(`${name} and ${arg} are not both true`);
+      return val;
+    }
 
-//   try {
-//     let field = boolean('lucky');
-//     assert.doesNotThrow(() => field.test(true));
+    field.must(beTrueAnd)(false);
+    assert.equal(field.test(true), false);
+  } catch (e) {
+    return e;
+  }
+}
 
-//     const beTrueAnd = arg => (name, val) => {
-//       if (!(arg && val)) 
-//       return new Error(`${name} and ${arg} are not both true`);
-//     }
+function booleanFieldChainableConstraintsTest() {
+  const description = `all constraints available to boolean
+  fields are chainable`;
+  try {
+    const andFalse = arg => (name, val) => {
+      if (!(val && false))
+      return new Error(`${name} and false must both be true`);
+      return val;
+    }
+    const beTrueAnd = arg => (name, val) => {
+      if (!(arg && val)) 
+      return new Error(`${name} and ${arg} are not both true`);
+      return val;
+    }
 
-//     field.must(beTrueAnd)(false);
-//     assert.throws(
-//       () => field.test(true),
-//       { message: 'lucky and false are not both true' }
-//     );
-//   } catch (e) {
-//     return e;
-//   }
-// }
-
-// function booleanFieldChainableConstraintsTest() {
-//   const description = `all constraints available to boolean
-//   fields are chainable`;
-
-//   try {
-//     const andFalse = arg => (name, val) => {
-//       if (!(val && false))
-//       return new Error(`${name} and false must both be true`);
-//     }
-
-//     const beTrueAnd = arg => (name, val) => {
-//       if (!(arg && val)) 
-//       return new Error(`${name} and ${arg} are not both true`);
-//     }
-
-//     assert.doesNotThrow(() => {
-//       let field = boolean('success')
-//       .notNull()
-//       .must(andFalse)()
-//       .must(beTrueAnd)(true)
-//     });
-//   } catch (e) {
-//     return e;
-//   }
-// }
+    assert.doesNotThrow(() => {
+      boolean('success')
+        .notNull()
+        .must(andFalse)()
+        .must(beTrueAnd)(true)
+    });
+  } catch (e) {
+    return e;
+  }
+}
 
 // function dataShapeCreationTest() {
 //   const description = `Models can be created

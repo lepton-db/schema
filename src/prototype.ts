@@ -133,7 +133,7 @@ class Integer extends Field {
 }
 
 const beBooleanFieldType = () => (name, val=null) => {
-  if (val !== null && typeof val == 'boolean')
+  if (val !== null && typeof val != 'boolean')
   return new Error(`${name} must be a boolean. Received ${typeof val}`);
   return val;
 }
@@ -142,5 +142,14 @@ class Boolean extends Field {
   constructor(name) {
     super(name);
     this.must(beBooleanFieldType)();
+  }
+}
+
+export class DataShape {
+  constructor(...fields) {
+    // ...
+  }
+  create(obj) {
+    // ...
   }
 }
