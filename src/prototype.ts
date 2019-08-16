@@ -146,10 +146,19 @@ class Boolean extends Field {
 }
 
 export class DataShape {
+  fields = {};
   constructor(...fields) {
-    // ...
+    for (const field of fields) {
+      const { name, constraints, test } = field;
+      this.fields[name] = { constraints, test };
+    }
   }
-  create(obj) {
-    // ...
+  test(obj:object={}) {
+    for (const key of Object.keys(this.fields)) {
+      if (!this.fields[key].test(obj[key])) {
+        return false;
+      }
+    }
+    return true;
   }
 }

@@ -29,7 +29,7 @@ export const tests = [
   booleanFieldNotNullTest,
   booleanFieldMustTest,
   booleanFieldChainableConstraintsTest,
-  // dataShapeCreationTest,
+  dataShapeTestTest,
 ];
 
 function stringFieldCreationTest() {
@@ -392,47 +392,48 @@ function booleanFieldChainableConstraintsTest() {
   }
 }
 
-// function dataShapeCreationTest() {
-//   const description = `Models can be created
-//   from a list of fields`;
+function dataShapeTestTest() {
+  const description = `Objects can be tested
+  against a DataShape for validity`;
 
-//   try {
-//     let be = arg => (name, val) => {
-//       if (val !== arg)
-//       return new Error(`${name} must be "${arg}"`);
-//     }
+  try {
+    let be = arg => (name, val) => {
+      if (val !== arg)
+      return new Error(`${name} must be "${arg}"`);
+    }
 
-//     let cowboy = new DataShape(
-//       string('birthplace'),
-//       string('catchphrase').notNull(),
-//       string('firstname').minLength(1).must(be)('Juan Carlos'),
-//       string('lastname').maxLength(12).notNull(),
-//       integer('age').notNull().notNegative().notZero(),
-//       integer('kills').notNegative().notZero(),
-//     )
+    let cowboy = new DataShape(
+      string('birthplace'),
+      string('catchphrase').notNull(),
+      string('firstname').minLength(1).must(be)('Juan Carlos'),
+      string('lastname').maxLength(12).notNull(),
+      integer('age').notNull().notNegative().notZero(),
+      integer('kills').notNegative().notZero(),
+    )
 
-//     assert.doesNotThrow(() => cowboy.create({
-//         birthplace: 'Rio Grande',
-//         catchphrase: 'It\'s high noon',
-//         firstname: 'Juan Carlos',
-//         lastname: 'Riviera',
-//         age: 46,
-//         kills: 4,
-//       })
-//     );
+    assert.equal(
+      cowboy.test({
+        birthplace: 'Rio Grande',
+        catchphrase: 'It\'s high noon',
+        firstname: 'Juan Carlos',
+        lastname: 'Riviera',
+        age: 46,
+        kills: 4,
+      }),
+      true
+    );
 
-//     assert.throws(
-//       () => cowboy.create({
-//         catchphrase: 'Get along lil doggy',
-//         firstname: 'Rattlesnake Bill',
-//         lastname: 'Turner',
-//         age: 37,
-//         kills: 0,
-//       }),
-//       { message: 'firstname must be "Juan Carlos"' }
-//     );
-
-//   } catch (e) {
-//     return e;
-//   }
-// }
+    assert.equal(
+      cowboy.test({
+        catchphrase: 'Get along lil doggy',
+        firstname: 'Rattlesnake Bill',
+        lastname: 'Turner',
+        age: 37,
+        kills: 0,
+      }),
+      false,
+    );
+  } catch (e) {
+    return e;
+  }
+}
