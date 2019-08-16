@@ -17,6 +17,7 @@ export const tests = [
   stringFieldMustTest,
   stringFieldChainableConstraintsTest,
   integerFieldCreationTest,
+  integerFieldTypeTest,
   integerFieldNotNullTest,
   integerFieldNotNegativeTest,
   integerFieldNotZeroTest,
@@ -24,6 +25,7 @@ export const tests = [
   integerFieldMustTest,
   integerFieldChainableConstraintsTest,
   booleanFieldCreationTest,
+  booleanFieldTypeTest,
   booleanFieldNotNullTest,
   booleanFieldMustTest,
   booleanFieldChainableConstraintsTest,
@@ -185,6 +187,25 @@ function integerFieldCreationTest() {
   }
 }
 
+function integerFieldTypeTest() {
+  const description = `integer fields won't
+  accept non-integer non-empty values`;
+  try {
+    let field = integer('dollars');
+    assert.equal(field.test(), true);
+    assert.equal(field.test(null), true);
+    assert.equal(field.test(0), true);
+    assert.equal(field.test(1), true);
+    assert.equal(field.test(-1), true);
+    assert.equal(field.test('true'), false);
+    assert.equal(field.test(.5), false);
+    assert.equal(field.test([]), false);
+    assert.equal(field.test({}), false);
+  } catch (e) {
+    return e;
+  }
+}
+
 function integerFieldNotNullTest() {
   const description = `a notNull constraint can be
   applied to integer fields, which can be checked with
@@ -287,6 +308,24 @@ function booleanFieldCreationTest() {
     assert(field.name == 'freeShipping');
     assert(Array.isArray(field.constraints));
     assert(typeof field.test == 'function');
+  } catch (e) {
+    return e;
+  }
+}
+
+function booleanFieldTypeTest() {
+  const description = `boolean fields won't
+  accept non-boolean non-empty values`;
+  try {
+    let field = boolean('single');
+    assert.equal(field.test(), true);
+    assert.equal(field.test(null), true);
+    assert.equal(field.test(true), true);
+    assert.equal(field.test(false), true);
+    assert.equal(field.test('true'), false);
+    assert.equal(field.test(5), false);
+    assert.equal(field.test([]), false);
+    assert.equal(field.test({}), false);
   } catch (e) {
     return e;
   }
