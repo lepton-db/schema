@@ -15,6 +15,7 @@ export const tests = [
   stringFieldAlphabeticalTest,
   stringFieldNumericTest,
   stringFieldMustTest,
+  stringFieldMustMutateTest,
   stringFieldChainableConstraintsTest,
   integerFieldCreationTest,
   integerFieldTypeTest,
@@ -151,6 +152,32 @@ function stringFieldMustTest() {
 
     field.must(include)('!');
     assert.equal(field.test('try_and_break_this'), false);
+  } catch (e) {
+    return e;
+  }
+}
+
+function stringFieldMustMutateTest() {
+  const description = `String fields can apply
+  must() to transform the input value.`
+
+  // This will transform the input value
+  let obscure = arg => (name, val) => val.split('').map(c => '*').join('');
+
+  let beObscured = arg => (name, val) => {
+    for (let char of val) {
+      if (char != arg)
+      return new Error(`${name} must be obscured with "${arg}"`)
+    }
+    return val;
+  }
+  
+  try {
+    let field = string('password');
+    assert.equal(field.test('hello'), true);
+    field.must(obscure)();
+    field.must(beObscured)('*');
+    assert.equal(field.test('hello'), true);
   } catch (e) {
     return e;
   }
@@ -437,3 +464,4 @@ function dataShapeTestTest() {
     return e;
   }
 }
+

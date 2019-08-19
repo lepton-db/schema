@@ -153,7 +153,7 @@ export class DataShape {
       this.fields[name] = { constraints, test };
     }
   }
-  test(obj:object={}) {
+  test(obj:object={}):boolean {
     for (const key of Object.keys(this.fields)) {
       if (!this.fields[key].test(obj[key])) {
         return false;
