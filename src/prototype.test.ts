@@ -30,6 +30,7 @@ export const tests = [
   booleanFieldTypeTest,
   booleanFieldNotNullTest,
   booleanFieldMustTest,
+  booleanFieldMustMutateTest,
   booleanFieldChainableConstraintsTest,
   dataShapeTestTest,
 ];
@@ -406,6 +407,27 @@ function booleanFieldMustTest() {
 
     field.must(beTrueAnd)(false);
     assert.equal(field.test(true), false);
+  } catch (e) {
+    return e;
+  }
+}
+
+function booleanFieldMustMutateTest() {
+  const description = `Boolean fields can apply
+  must() to transform the input value.`
+
+  // This will transform the input value
+  let become = arg => (name, val) => arg;
+
+  let beFalse = arg => (name, val) => {
+    return (false == val) ? val : new Error(`${name} must be false`);
+  }
+
+  try {
+    let field = boolean('confirmed');
+    field.must(become)(false);
+    field.must(beFalse)();
+    assert.equal(field.test(true), true);
   } catch (e) {
     return e;
   }
