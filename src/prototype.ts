@@ -26,6 +26,15 @@ class Field {
     this.constraints = [];
     this.notNull = this.must(notNull);
   }
+
+  // Apply custom field constraints
+  must(fn: (arg?) => any) {
+    return (arg?) => {
+      this.constraints.push(fn(arg))
+      return this;
+    }
+  }
+
   // Determine if a value passes all field constraints
   test(val?): boolean {
     // Run the input value through each of the constraints
@@ -40,17 +49,32 @@ class Field {
     }
 
     // Run the first constraint (type check) once more
-    const [typecheck] = this.constraints;
-    if (typecheck(this.name, val) instanceof Error) return false;
-    
-    // Test Success
+    const [typeConstraint] = this.constraints;
+    if (typeConstraint(this.name, val) instanceof Error) return false;
+
+    // Success
     return true;
   }
-  must(fn: (arg?) => any) {
-    return (arg?) => {
-      this.constraints.push(fn(arg))
-      return this;
+
+  from(val?): any {
+    // Run the input value through each of the constraints
+    for (const constraint of this.constraints) {
+      let temp = constraint(this.name, val);
+
+      // Failure
+      if (temp instanceof Error) return temp;
+
+      // Don't re-assign val if constraint returned undefined
+      if (temp !== undefined) val = temp;
     }
+
+    // Run the first constraint (type check) once more
+    const [typeConstraint] = this.constraints;
+    let typecheck = typeConstraint(this.name, val);
+    if (typecheck instanceof Error) return typecheck;
+    
+    // Success
+    return val;
   }
 }
 
@@ -161,8 +185,8 @@ export class DataShape {
   fields = {};
   constructor(...fields) {
     for (const field of fields) {
-      const { name, constraints, test } = field;
-      this.fields[name] = { constraints, test };
+      const { name, constraints, test, from } = field;
+      this.fields[name] = { name, constraints, test, from };
     }
   }
   test(obj:object={}):boolean {
@@ -172,5 +196,14 @@ export class DataShape {
       }
     }
     return true;
+  }
+  from(input:object={}): object | Error {
+    let instance = {};
+    for (const key of Object.keys(this.fields)) {
+      let field = this.fields[key].from(input[key]);
+      if (field instanceof Error) return field;
+      instance[key] = field;
+    }
+    return instance;
   }
 }

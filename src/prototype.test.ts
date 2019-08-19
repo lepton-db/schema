@@ -34,6 +34,7 @@ export const tests = [
   booleanFieldChainableConstraintsTest,
   fieldUndefinedConstraintReturnTest,
   dataShapeTestTest,
+  dataShapeFromTest,
 ];
 
 function stringFieldCreationTest() {
@@ -524,6 +525,64 @@ function dataShapeTestTest() {
       }),
       false,
     );
+  } catch (e) {
+    return e;
+  }
+}
+
+function dataShapeFromTest() {
+  const description = `Objects can be created 
+  under the enforcement of DataShape.from()`;
+
+  try {
+    let be = arg => (name, val) => {
+      if (val !== arg)
+      return new Error(`${name} must be "${arg}"`);
+    }
+
+    let cowboy = new DataShape(
+      string('birthplace'),
+      string('catchphrase').notNull(),
+      string('firstname').minLength(1).must(be)('Juan Carlos'),
+      string('lastname').maxLength(12).notNull(),
+      integer('age').notNull().positive().notZero(),
+      integer('kills').positive().notZero(),
+    )
+
+    let input = {
+      birthplace: 'Rio Grande',
+      catchphrase: 'It\'s high noon',
+      firstname: 'Juan Carlos',
+      lastname: 'Riviera',
+      age: 46,
+      kills: 4,
+    }
+
+    assert.deepEqual(
+      cowboy.from(input),
+      input,
+    );
+
+    let badInput = {
+      catchphrase: 'Get along lil doggy',
+      firstname: 'Rattlesnake Bill',
+      lastname: 'Turner',
+      age: 37,
+      kills: 0,
+    }
+
+    let maybeCowboy = cowboy.from(badInput);
+    assert.equal(
+      maybeCowboy instanceof Error,
+      true,
+    );
+
+    assert.equal(
+      // @ts-ignore
+      maybeCowboy.message,
+      'firstname must be "Juan Carlos"',
+    );
+
   } catch (e) {
     return e;
   }
