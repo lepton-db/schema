@@ -20,7 +20,7 @@ export const tests = [
   integerFieldCreationTest,
   integerFieldTypeTest,
   integerFieldNotNullTest,
-  integerFieldNotNegativeTest,
+  integerFieldPositiveTest,
   integerFieldNotZeroTest,
   integerFieldRangeTest,
   integerFieldMustTest,
@@ -250,14 +250,14 @@ function integerFieldNotNullTest() {
   }
 }
 
-function integerFieldNotNegativeTest() {
-  const description = `a notNegative constraint can be
+function integerFieldPositiveTest() {
+  const description = `a positive constraint can be
   applied to integer fields, which can be checked with
   field.test()`;
   try {
     let field = integer('debt');
     assert.equal(field.test(-5), true);
-    field.notNegative();
+    field.positive();
     assert.equal(field.test(-5), false);
   } catch (e) {
     return e;
@@ -323,7 +323,7 @@ function integerFieldMustMutateTest() {
   try {
     let field = integer('distance');
     field.must(magnitude)();
-    field.notNegative();
+    field.positive();
     assert.equal(field.test(-5), true);
   } catch (e) {
     return e;
@@ -337,7 +337,7 @@ function integerFieldChainableConstraintsTest() {
     assert.doesNotThrow(() => {
       integer('goal')
         .notNull()
-        .notNegative()
+        .positive()
         .notZero()
         .must(x => x)
     });
@@ -474,8 +474,8 @@ function dataShapeTestTest() {
       string('catchphrase').notNull(),
       string('firstname').minLength(1).must(be)('Juan Carlos'),
       string('lastname').maxLength(12).notNull(),
-      integer('age').notNull().notNegative().notZero(),
-      integer('kills').notNegative().notZero(),
+      integer('age').notNull().positive().notZero(),
+      integer('kills').positive().notZero(),
     )
 
     assert.equal(

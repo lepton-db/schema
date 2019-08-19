@@ -101,7 +101,7 @@ const beIntegerFieldType = () => (name, val=null) => {
   return val;
 }
 
-const notNegative = () => (name, val) => {
+const positive = () => (name, val) => {
   if (val < 0)
   return new Error(`${name} must not be negative`)
   return val;
@@ -120,13 +120,13 @@ const range = (arg) => (name, val) => {
 }
 
 class Integer extends Field {
-  notNegative;
+  positive;
   notZero;
   range;
   constructor(name) {
     super(name);
     this.must(beIntegerFieldType)();
-    this.notNegative = this.must(notNegative);
+    this.positive = this.must(positive);
     this.notZero = this.must(notZero);
     this.range = this.must(range);
   }
