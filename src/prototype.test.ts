@@ -32,6 +32,7 @@ export const tests = [
   booleanFieldMustTest,
   booleanFieldMustMutateTest,
   booleanFieldChainableConstraintsTest,
+  // fieldUndefinedConstraintReturnTest,
   dataShapeTestTest,
 ];
 
@@ -454,6 +455,29 @@ function booleanFieldChainableConstraintsTest() {
         .must(andFalse)()
         .must(beTrueAnd)(true)
     });
+  } catch (e) {
+    return e;
+  }
+}
+
+function fieldUndefinedConstraintReturnTest() {
+  const description = `Constraints that don't
+  return a value will not transform the input.`
+
+  // This will NOT transform the input value
+  let chill = arg => (name, val) => {
+    return;
+  };
+
+  let stillBe = arg => (name, val) => {
+    return val == arg ? val : new Error(`${name} must be ${val}`);
+  }
+
+  try {
+    let field = string('thoughts');
+    field.must(chill)();
+    field.must(stillBe)('awake');
+    assert.equal(field.test('awake'), true);
   } catch (e) {
     return e;
   }
