@@ -24,6 +24,7 @@ export const tests = [
   integerFieldNotZeroTest,
   integerFieldRangeTest,
   integerFieldMustTest,
+  integerFieldMustMutateTest,
   integerFieldChainableConstraintsTest,
   booleanFieldCreationTest,
   booleanFieldTypeTest,
@@ -306,6 +307,23 @@ function integerFieldMustTest() {
     }
     field.must(divideBy)(4);
     assert.equal(field.test(7), false);
+  } catch (e) {
+    return e;
+  }
+}
+
+function integerFieldMustMutateTest() {
+  const description = `Integer fields can apply
+  must() to transform the input value.`
+
+  // This will transform the input value
+  let magnitude = arg => (name, val) => Math.abs(val);
+
+  try {
+    let field = integer('distance');
+    field.must(magnitude)();
+    field.notNegative();
+    assert.equal(field.test(-5), true);
   } catch (e) {
     return e;
   }
