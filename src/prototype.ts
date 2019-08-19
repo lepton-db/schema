@@ -26,20 +26,24 @@ class Field {
     this.constraints = [];
     this.notNull = this.must(notNull);
   }
+  // Determine if a value passes all field constraints
   test(val?): boolean {
-    let result = val;
-
     // Run the input value through each of the constraints
     for (const constraint of this.constraints) {
-      result = constraint(this.name, result);
-      if (result instanceof Error) return false;
+      let temp = constraint(this.name, val);
+
+      // Error objects indicate Test Failure
+      if (temp instanceof Error) return false;
+
+      // Don't re-assign val if constraint returned undefined
+      if (temp !== undefined) val = temp;
     }
 
     // Run the first constraint (type check) once more
     const [typecheck] = this.constraints;
-    if (typecheck(this.name, result) instanceof Error) return false;
+    if (typecheck(this.name, val) instanceof Error) return false;
     
-    // Success
+    // Test Success
     return true;
   }
   must(fn: (arg?) => any) {

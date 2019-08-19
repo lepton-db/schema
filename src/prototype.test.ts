@@ -32,7 +32,7 @@ export const tests = [
   booleanFieldMustTest,
   booleanFieldMustMutateTest,
   booleanFieldChainableConstraintsTest,
-  // fieldUndefinedConstraintReturnTest,
+  fieldUndefinedConstraintReturnTest,
   dataShapeTestTest,
 ];
 
@@ -461,8 +461,8 @@ function booleanFieldChainableConstraintsTest() {
 }
 
 function fieldUndefinedConstraintReturnTest() {
-  const description = `Constraints that don't
-  return a value will not transform the input.`
+  const description = `Constraints that return
+  undefined will not transform the input.`
 
   // This will NOT transform the input value
   let chill = arg => (name, val) => {
