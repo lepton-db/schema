@@ -1,5 +1,5 @@
 {
-  "name": "@node-scarlet/datashape",
+  "name": "datashape",
   "version": "0.0.0",
   "description": "Super flexible validation for primitive data structures",
   "main": "dist/datashape.js",
@@ -17,10 +17,10 @@
   "author": "craig fay",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^12.6.8",
-    "nodemon": "^1.19.1"
+    "@types/node": "^12.6.8"
   },
   "dependencies": {
+    "nodemon": "^1.19.1",
     "typescript": "^3.5.3"
   }
 }
