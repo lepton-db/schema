@@ -5,7 +5,7 @@
 
 /**
  * Schemas  made up of Fields, which are made up of Constraints
- * See datashape.test.ts for examples of how Schemas are composed
+ * See schema.test.ts for examples of how Schemas are composed
  */
 export class Schema {
   create: (object) => object | Error;

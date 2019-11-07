@@ -439,7 +439,7 @@ function dataShapeCreationTest() {
 
 function dataShapeTestTest() {
   const description = `Object can be validated against
-  a datashape with test()`;
+  a schema with test()`;
 
   try {
     let be = arg => (name, val) => {

@@ -2,7 +2,7 @@
   "name": "@lepton/schema",
   "version": "0.0.0",
   "description": "Super flexible validation for primitive data structures",
-  "main": "dist/datashape.js",
+  "main": "dist/schema.js",
   "scripts": {
     "prepublish": "npm run build",
     "build": "npx tsc",

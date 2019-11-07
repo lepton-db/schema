@@ -25,7 +25,7 @@ async function runWithTimer(fn) {
 
 async function testSuite() {
   const allTests = [
-    // ...require('./datashape.test').tests,
+    // ...require('./schema.test').tests,
     ...require('./prototype.test').tests,
   ];
   for (const test of allTests) {
