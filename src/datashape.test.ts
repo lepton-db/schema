@@ -22,6 +22,7 @@ export const tests = [
   booleanFieldMustTest,
   booleanFieldChainableConstraintsTest,
   dataShapeCreationTest,
+  dataShapeTestTest,
 ];
 
 function stringFieldCreationTest() {
@@ -429,6 +430,56 @@ function dataShapeCreationTest() {
         kills: 0,
       }),
       { message: 'firstname must be "Juan Carlos"' }
+    );
+
+  } catch (e) {
+    return e;
+  }
+}
+
+function dataShapeTestTest() {
+  const description = `Object can be validated against
+  a datashape with test()`;
+
+  try {
+    let be = arg => (name, val) => {
+      if (val !== arg)
+      throw new Error(`${name} must be "${arg}"`);
+    }
+
+    let cowboy = new DataShape(
+      string('birthplace'),
+      string('catchphrase').notNull(),
+      string('firstname').minLength(1).must(be)('Juan Carlos'),
+      string('lastname').maxLength(12).notNull(),
+      integer('age').notNull().notNegative().notZero(),
+      integer('kills').notNegative().notZero(),
+    )
+
+    // Should produce no errors
+    const validationErrors = cowboy.test({
+      birthplace: 'Rio Grande',
+      catchphrase: 'It\'s high noon',
+      firstname: 'Juan Carlos',
+      lastname: 'Riviera',
+      age: 46,
+      kills: 4,
+    });
+    assert.equal(validationErrors.length, 0);
+        
+
+    // Should produce errors
+    const validationErrorsAgain = cowboy.test({
+      catchphrase: 'Get along lil doggy',
+      firstname: 'Rattlesnake Bill',
+      lastname: 'Turner',
+      age: 37,
+      kills: 0,
+    });
+    assert.equal(validationErrorsAgain.length, 1);
+    assert.equal(
+      validationErrorsAgain[0].message,
+      'firstname must be "Juan Carlos"'
     );
 
   } catch (e) {
