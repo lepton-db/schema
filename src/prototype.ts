@@ -181,7 +181,7 @@ class Boolean extends Field {
   }
 }
 
-export class DataShape {
+export class Schema {
   fields = {};
   constructor(...fields) {
     for (const field of fields) {

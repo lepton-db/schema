@@ -1,13 +1,13 @@
 /**
- * DataShapes can be used to define data structures that
+ * Schemas can be used to define data structures that
  * have logical constraints, in addition to type constraints
  */
 
 /**
- * DataShapes  made up of Fields, which are made up of Constraints
- * See datashape.test.ts for examples of how DataShapes are composed
+ * Schemas  made up of Fields, which are made up of Constraints
+ * See datashape.test.ts for examples of how Schemas are composed
  */
-export class DataShape {
+export class Schema {
   create: (object) => object | Error;
   test: (object) => Error[]
   fields: object;
@@ -18,8 +18,8 @@ export class DataShape {
   }
 }
 /**
- * Try to create an object that conforms to a `DataShape`
- * Bound as a method to  `DataShape` instances
+ * Try to create an object that conforms to a `Schema`
+ * Bound as a method to  `Schema` instances
  */
 function create(obj): object | Error {
   let data = {};
@@ -31,8 +31,8 @@ function create(obj): object | Error {
   return data
 }
 /**
- * Validate an object against a `DataShape`
- * Bound as a method to  `DataShape` instances
+ * Validate an object against a `Schema`
+ * Bound as a method to  `Schema` instances
  */
 function test(obj): Error[] {
   const errors = [];
@@ -44,7 +44,7 @@ function test(obj): Error[] {
 }
 /**
  * Assemble an array of `Field` objects as an object on `this`.
- * Bound as a construction helper to  `DataShape`
+ * Bound as a construction helper to  `Schema`
  */
 function attachFields(...fields) {
   this.fields = {};

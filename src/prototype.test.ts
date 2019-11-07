@@ -3,7 +3,7 @@ import {
   string,
   integer,
   boolean,
-  DataShape
+  Schema
 } from './prototype';
 
 export const tests = [
@@ -486,7 +486,7 @@ function fieldUndefinedConstraintReturnTest() {
 
 function dataShapeTestTest() {
   const description = `Objects can be tested
-  against a DataShape for validity`;
+  against a Schema for validity`;
 
   try {
     let be = arg => (name, val) => {
@@ -494,7 +494,7 @@ function dataShapeTestTest() {
       return new Error(`${name} must be "${arg}"`);
     }
 
-    let cowboy = new DataShape(
+    let cowboy = new Schema(
       string('birthplace'),
       string('catchphrase').notNull(),
       string('firstname').minLength(1).must(be)('Juan Carlos'),
@@ -532,7 +532,7 @@ function dataShapeTestTest() {
 
 function dataShapeFromTest() {
   const description = `Objects can be created 
-  under the enforcement of DataShape.from()`;
+  under the enforcement of Schema.from()`;
 
   try {
     let be = arg => (name, val) => {
@@ -540,7 +540,7 @@ function dataShapeFromTest() {
       return new Error(`${name} must be "${arg}"`);
     }
 
-    let cowboy = new DataShape(
+    let cowboy = new Schema(
       string('birthplace'),
       string('catchphrase').notNull(),
       string('firstname').minLength(1).must(be)('Juan Carlos'),

@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { string, integer, boolean, DataShape } from './datashape';
+import { string, integer, boolean, Schema } from './schema';
 
 export const tests = [
   stringFieldCreationTest,
@@ -402,7 +402,7 @@ function dataShapeCreationTest() {
       throw new Error(`${name} must be "${arg}"`);
     }
 
-    let cowboy = new DataShape(
+    let cowboy = new Schema(
       string('birthplace'),
       string('catchphrase').notNull(),
       string('firstname').minLength(1).must(be)('Juan Carlos'),
@@ -447,7 +447,7 @@ function dataShapeTestTest() {
       throw new Error(`${name} must be "${arg}"`);
     }
 
-    let cowboy = new DataShape(
+    let cowboy = new Schema(
       string('birthplace'),
       string('catchphrase').notNull(),
       string('firstname').minLength(1).must(be)('Juan Carlos'),
