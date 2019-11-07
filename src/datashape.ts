@@ -9,9 +9,11 @@
  */
 export class DataShape {
   create: (object) => object | Error;
+  test: (object) => Error[]
   fields: object;
   constructor(...fields) {
     this.create = create.bind(this);
+    this.test = test.bind(this);
     attachFields.bind(this)(...fields);
   }
 }
@@ -27,6 +29,18 @@ function create(obj): object | Error {
     data[name] = obj[name];
   }
   return data
+}
+/**
+ * Validate an object against a `DataShape`
+ * Bound as a method to  `DataShape` instances
+ */
+function test(obj): Error[] {
+  const errors = [];
+  for (const name of Object.keys(obj)) {
+    const validation = this.fields[name].test(obj[name]);
+    if (validation instanceof Error) errors.push(validation);
+  }
+  return errors;
 }
 /**
  * Assemble an array of `Field` objects as an object on `this`.
