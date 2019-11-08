@@ -652,7 +652,7 @@ function schemaFromTest() {
       return new Error(`${name} must be "${arg}"`);
     }
 
-    let cowboy = schema(
+    let cowboySchema = schema(
       string('birthplace'),
       string('catchphrase').notNull(),
       string('firstname').minLength(1).must(be)('Juan Carlos'),
@@ -670,7 +670,7 @@ function schemaFromTest() {
       kills: 4,
     }
 
-    const [output, errors] = cowboy.from(input);
+    const [output, errors] = cowboySchema.validate(input);
     assert.deepEqual(input, output);
     assert.equal(errors.length, 0);
 
@@ -682,7 +682,7 @@ function schemaFromTest() {
       kills: 0,
     }
 
-    const [badOutput, badErrors] = cowboy.from(badInput);
+    const [badOutput, badErrors] = cowboySchema.validate(badInput);
     assert.equal(badOutput['birthplace'], null);
     assert.equal(badErrors.length, 2);
     assert.equal(

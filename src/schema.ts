@@ -66,7 +66,7 @@ class Field {
   }
 
   // Run a value through all field constraints
-  from(val?): [any, Error[]] {
+  validate(val?): [any, Error[]] {
     const errors = [];
     // Run the input value through each of the constraints
     this.constraints.forEach(constraint => {
@@ -214,15 +214,15 @@ export class Schema {
   fields = {};
   constructor(...fields) {
     for (const field of fields) {
-      const { name, constraints, test, from } = field;
-      this.fields[name] = { name, constraints, test, from };
+      const { name, constraints, test, validate } = field;
+      this.fields[name] = { name, constraints, test, validate };
     }
   }
-  from(obj:object={}): [object, Error[]] {
+  validate(obj:object={}): [object, Error[]] {
     const resultObj = {};
     const resultErrors = [];
     for (const key of Object.keys(this.fields)) {
-      const [val, errors] = this.fields[key].from(obj[key]);
+      const [val, errors] = this.fields[key].validate(obj[key]);
       resultObj[key] = val;
       errors.forEach(e => resultErrors.push(e));
     }
