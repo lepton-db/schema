@@ -29,6 +29,7 @@ export const tests = [
   integerFieldChainableConstraintsTest,
   floatFieldCreationTest,
   floatFieldTypeTest,
+  floatFieldNotNullTest,
   booleanFieldCreationTest,
   booleanFieldTypeTest,
   booleanFieldNotNullTest,
@@ -379,6 +380,21 @@ function floatFieldTypeTest() {
     assert.equal(field.test(.5), true);
     assert.equal(field.test([]), false);
     assert.equal(field.test({}), false);
+  } catch (e) {
+    return e;
+  }
+}
+
+function floatFieldNotNullTest() {
+  const description = `a notNull constraint can be
+  applied to float fields, which can be checked with
+  field.test()`;
+
+  try {
+    let field = float('salary');
+    assert.equal(field.test(), true);
+    field.notNull();
+    assert.equal(field.test(), false);
   } catch (e) {
     return e;
   }
