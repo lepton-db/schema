@@ -28,6 +28,7 @@ export const tests = [
   integerFieldMustMutateTest,
   integerFieldChainableConstraintsTest,
   floatFieldCreationTest,
+  floatFieldTypeTest,
   booleanFieldCreationTest,
   booleanFieldTypeTest,
   booleanFieldNotNullTest,
@@ -358,6 +359,26 @@ function floatFieldCreationTest() {
     assert(field.name == 'shippingCost');
     assert(Array.isArray(field.constraints));
     assert(typeof field.test == 'function');
+  } catch (e) {
+    return e;
+  }
+}
+
+function floatFieldTypeTest() {
+  const description = `float fields won't
+  accept non-number non-void values`;
+  try {
+    let field = float('dollars');
+    assert.equal(field.test(Math.PI), true);
+    assert.equal(field.test(), true);
+    assert.equal(field.test(null), true);
+    assert.equal(field.test(0), true);
+    assert.equal(field.test(1), true);
+    assert.equal(field.test(-1), true);
+    assert.equal(field.test('true'), false);
+    assert.equal(field.test(.5), true);
+    assert.equal(field.test([]), false);
+    assert.equal(field.test({}), false);
   } catch (e) {
     return e;
   }

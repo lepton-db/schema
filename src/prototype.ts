@@ -1,4 +1,6 @@
-
+/**
+ * Wrapping classes with functions prevents people from inheriting from them
+ */
 export function string(name) {
   return new String(name);
 }
@@ -8,7 +10,7 @@ export function integer(name) {
 }
 
 export function float(name) {
-  return new Integer(name);
+  return new Float(name);
 }
 
 export function boolean(name) {
@@ -173,7 +175,7 @@ class Integer extends Field {
 }
 
 const beFloatFieldType = () => (name, val=null) => {
-  if (val !== null && typeof val == 'number')
+  if (val !== null && typeof val !== 'number')
   return new Error(`${name} must be a float. Received ${typeof val}`);
   return val;
 }
