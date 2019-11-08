@@ -1,5 +1,5 @@
 import { strict as assert } from 'assert';
-import { string, integer, boolean, Schema } from './schema';
+import { string, integer, float, boolean, Schema } from './schema';
 
 export const tests = [
   stringFieldCreationTest,
@@ -17,6 +17,7 @@ export const tests = [
   integerFieldRangeTest,
   integerFieldMustTest,
   integerFieldChainableConstraintsTest,
+  floatFieldCreationTest,
   booleanFieldCreationTest,
   booleanFieldNotNullTest,
   booleanFieldMustTest,
@@ -305,6 +306,19 @@ function integerFieldChainableConstraintsTest() {
       .notZero()
       .must(x => x)
     });
+  } catch (e) {
+    return e;
+  }
+}
+
+function floatFieldCreationTest() {
+  const description = `float fields can be created
+  and posess the expected properties`;
+
+  try {
+    let field = float('salary');
+    assert(field.name == 'salary');
+    assert(Array.isArray(field.tests));
   } catch (e) {
     return e;
   }

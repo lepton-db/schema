@@ -149,6 +149,15 @@ const range = (arg) => (name, val) => {
 }
 
 /**
+ * Constraints available to float fields
+ */
+
+const beFloatFieldType = () => (name, val) => {
+  if (val != null && typeof val == 'number')
+  throw new Error(`${name} must be a float. Received ${typeof val}`);
+}
+
+/**
  * Constraints available to boolean fields
  */
 
@@ -188,6 +197,19 @@ export function integer(name) {
   let f: any = new Field(name);
   f.constraints.type = 'integer';
   f.must(beIntegerFieldType)()
+
+  f.notNegative = f.must(notNegative);
+  f.notZero = f.must(notZero);
+  f.range = f.must(range);
+  return f;
+}
+/**
+ * Float Field
+ */
+export function float(name) {
+  let f: any = new Field(name);
+  f.constraints.type = 'float';
+  f.must(beFloatFieldType)()
 
   f.notNegative = f.must(notNegative);
   f.notZero = f.must(notZero);
