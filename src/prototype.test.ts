@@ -2,6 +2,7 @@ import { strict as assert } from 'assert';
 import {
   string,
   integer,
+  float,
   boolean,
   Schema
 } from './prototype';
@@ -26,6 +27,7 @@ export const tests = [
   integerFieldMustTest,
   integerFieldMustMutateTest,
   integerFieldChainableConstraintsTest,
+  floatFieldCreationTest,
   booleanFieldCreationTest,
   booleanFieldTypeTest,
   booleanFieldNotNullTest,
@@ -347,6 +349,20 @@ function integerFieldChainableConstraintsTest() {
     return e;
   }
 }
+
+function floatFieldCreationTest() {
+  const description = `float fields can be created
+  and posess the expected properties`;
+  try {
+    let field = float('shippingCost');
+    assert(field.name == 'shippingCost');
+    assert(Array.isArray(field.constraints));
+    assert(typeof field.test == 'function');
+  } catch (e) {
+    return e;
+  }
+}
+
 
 function booleanFieldCreationTest() {
   const description = `boolean fields can be created

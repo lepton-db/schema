@@ -7,6 +7,10 @@ export function integer(name) {
   return new Integer(name);
 }
 
+export function float(name) {
+  return new Integer(name);
+}
+
 export function boolean(name) {
   return new Boolean(name);
 }
@@ -162,6 +166,25 @@ class Integer extends Field {
   constructor(name) {
     super(name);
     this.must(beIntegerFieldType)();
+    this.positive = this.must(positive);
+    this.notZero = this.must(notZero);
+    this.range = this.must(range);
+  }
+}
+
+const beFloatFieldType = () => (name, val=null) => {
+  if (val !== null && typeof val == 'number')
+  return new Error(`${name} must be a float. Received ${typeof val}`);
+  return val;
+}
+
+class Float extends Field {
+  positive;
+  notZero;
+  range;
+  constructor(name) {
+    super(name);
+    this.must(beFloatFieldType)();
     this.positive = this.must(positive);
     this.notZero = this.must(notZero);
     this.range = this.must(range);
