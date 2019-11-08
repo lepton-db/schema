@@ -30,6 +30,7 @@ export const tests = [
   floatFieldCreationTest,
   floatFieldTypeTest,
   floatFieldNotNullTest,
+  floatFieldPositiveTest,
   booleanFieldCreationTest,
   booleanFieldTypeTest,
   booleanFieldNotNullTest,
@@ -399,6 +400,22 @@ function floatFieldNotNullTest() {
     return e;
   }
 }
+
+function floatFieldPositiveTest() {
+  const description = `a positive constraint can be
+  applied to float fields, which can be checked with
+  field.test()`;
+  try {
+    let field = float('debt');
+    assert.equal(field.test(-5), true);
+    field.positive();
+    assert.equal(field.test(-5), false);
+  } catch (e) {
+    return e;
+  }
+}
+
+
 
 
 function booleanFieldCreationTest() {
