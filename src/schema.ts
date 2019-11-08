@@ -1,234 +1,234 @@
 /**
- * Schemas can be used to define data structures that
- * have logical constraints, in addition to type constraints
+ * Wrapping classes with functions prevents people from inheriting from them
  */
-
-/**
- * Schemas  made up of Fields, which are made up of Constraints
- * See schema.test.ts for examples of how Schemas are composed
- */
-export class Schema {
-  create: (object) => object | Error;
-  test: (object) => Error[]
-  fields: object;
-  constructor(...fields) {
-    this.create = create.bind(this);
-    this.test = test.bind(this);
-    attachFields.bind(this)(...fields);
-  }
-}
-/**
- * Try to create an object that conforms to a `Schema`
- * Bound as a method to  `Schema` instances
- */
-function create(obj): object | Error {
-  let data = {};
-  for (const name of Object.keys(obj)) {
-    const validation = this.fields[name].test(obj[name]);
-    if (validation instanceof Error) return validation;
-    data[name] = obj[name];
-  }
-  return data
-}
-/**
- * Validate an object against a `Schema`
- * Bound as a method to  `Schema` instances
- */
-function test(obj): Error[] {
-  const errors = [];
-  for (const name of Object.keys(obj)) {
-    const validation = this.fields[name].test(obj[name]);
-    if (validation instanceof Error) errors.push(validation);
-  }
-  return errors;
-}
-/**
- * Assemble an array of `Field` objects as an object on `this`.
- * Bound as a construction helper to  `Schema`
- */
-function attachFields(...fields) {
-  this.fields = {};
-  fields.forEach(f => {
-    const { name, test, tests, constraints } = f;
-    this.fields[name] = { test, tests, constraints };
-  });
-}
-/**
- * Used as a base class for concrete field types
- * @param name
- */
-class Field {
-  name;
-  tests;
-  constraints;
-  must;
-  notNull;
-  defaultTo;
-  _default;
-  test; 
-  constructor(name:string) {
-    enforceArgumentType('name', name, 'string');
-    this.name = name;
-    // functions that prove/disprove constraint compliance
-    this.tests = [];
-    // records arg values given for each constraint
-    this.constraints = {};
-    // Custom constraint hook
-    this.must = must.bind(this);
-    // Generic constraints
-    this.notNull = this.must(notNull);
-    this.defaultTo = this.must(defaultTo);
-
-    this._default = () => this.constraints.defaultTo || null;
-    this.test = (val=this._default()) => this.tests.forEach(c => c(name, val));
-  }
+export function string(name) {
+  return new String(name);
 }
 
-/**
- * Generic constraints that are available to multiple field types
- */
+export function integer(name) {
+  return new Integer(name);
+}
+
+export function float(name) {
+  return new Float(name);
+}
+
+export function boolean(name) {
+  return new Boolean(name);
+}
+
 const notNull = () => (name, val) => {
   if (val == null)
-  throw new Error(`${name} must not be null`);
-}
-const defaultTo = arg => (name, val) => {
-  // ...
+  return new Error(`${name} must not be null`);
+  return val;
 }
 
-/**
- * Constraints available to string fields
- */
+class Field {
+  name:string;
+  constraints;
+  notNull;
+  constructor(name) {
+    this.name = name;
+    this.constraints = [];
+    this.notNull = this.must(notNull);
+  }
 
-const beStringFieldType = () => (name, val) => {
-  if (val != null && typeof val != 'string')
-  throw new Error(`${name} must be a string. Received ${typeof val}`);
+  // Apply custom field constraints
+  must(fn: (arg?) => any) {
+    return (arg?) => {
+      this.constraints.push(fn(arg))
+      return this;
+    }
+  }
+
+  // Determine if a value passes all field constraints
+  test(val?): boolean {
+    // Run the input value through each of the constraints
+    for (const constraint of this.constraints) {
+      let temp = constraint(this.name, val);
+
+      // Error objects indicate Test Failure
+      if (temp instanceof Error) return false;
+
+      // Don't re-assign val if constraint returned undefined
+      if (temp !== undefined) val = temp;
+    }
+
+    // Run the first constraint (type check) once more
+    const [typeConstraint] = this.constraints;
+    if (typeConstraint(this.name, val) instanceof Error) return false;
+
+    // Success
+    return true;
+  }
+
+  from(val?): any {
+    // Run the input value through each of the constraints
+    for (const constraint of this.constraints) {
+      let temp = constraint(this.name, val);
+
+      // Failure
+      if (temp instanceof Error) return temp;
+
+      // Don't re-assign val if constraint returned undefined
+      if (temp !== undefined) val = temp;
+    }
+
+    // Run the first constraint (type check) once more
+    const [typeConstraint] = this.constraints;
+    let typecheck = typeConstraint(this.name, val);
+    if (typecheck instanceof Error) return typecheck;
+    
+    // Success
+    return val;
+  }
 }
+
+const beStringFieldType = () => (name, val=null) => {
+  if (val !== null && typeof val != 'string')
+  return new Error(`${name} must be a string. Received ${typeof val}`);
+  return val;
+}
+
 const minLength = arg => (name, val) => {
-  if (val.length < arg)
-  throw new Error(`${name} has a min length of ${arg}`)
+  if (!val || val.length < arg)
+  return new Error(`${name} has a min length of ${arg}`)
+  return val;
 }
+
 const maxLength = arg => (name, val) => {
-  if (val.length > arg)
-  throw new Error(`${name} has a max length of ${arg}`)
+  if (!val || val.length > arg)
+  return new Error(`${name} has a max length of ${arg}`)
+  return val;
 }
-const alphabetical = () => (name, val) => {
+
+const alphabetical = arg => (name, val) => {
   if (false == /^[a-zA-Z]+$/.test(val))
-  throw new Error(`${name} must only use alphabetical characters`);
+  return new Error(`${name} must only use alphabetical characters`);
+  return val;
 }
+
 const numeric = () => (name, val) => {
   if (false == /^\d+$/.test(val))
-  throw new Error(`${name} must only use numeric characters`);
+  return new Error(`${name} must only use numeric characters`);
+  return val;
 }
+
 // https://www.regular-expressions.info/email.html
 const email = () => (name, val) => {
   const pattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/
-  if (false == /^\d+$/.test(val))
-  throw new Error(`${name} must be an email address`);
+  if (false == pattern.test(val))
+  return new Error(`${name} must be an email address`);
+  return val;
 }
 
-/**
- * Constraints available to integer fields
- */
-
-const beIntegerFieldType = () => (name, val) => {
-  if (val != null && !Number.isInteger(val))
-  throw new Error(`${name} must be an integer. Received ${typeof val}`);
+class String extends Field {
+  minLength;
+  maxLength;
+  alphabetical;
+  numeric;
+  constructor(name) {
+    super(name);
+    this.must(beStringFieldType)();
+    this.minLength = this.must(minLength);
+    this.maxLength = this.must(maxLength);
+    this.alphabetical = this.must(alphabetical);
+    this.numeric = this.must(numeric);
+  }
 }
-const notNegative = () => (name, val) => {
+
+const beIntegerFieldType = () => (name, val=null) => {
+  if (val !== null && !Number.isInteger(val))
+  return new Error(`${name} must be an integer. Received ${typeof val}`);
+  return val;
+}
+
+const positive = () => (name, val) => {
   if (val < 0)
-  throw new Error(`${name} must not be negative`)
+  return new Error(`${name} must not be negative`)
+  return val;
 }
+
 const notZero = () => (name, val) => {
   if (val == 0)
-  throw new Error(`${name} must not be 0`)
+  return new Error(`${name} must not be 0`)
+  return val;
 }
+
 const range = (arg) => (name, val) => {
   const [min, max] = arg;
   if (val < min || val > max)
-  throw new Error(`${name} must be between ${min} and ${max}`)
+  return new Error(`${name} must be between ${min} and ${max}`)
 }
 
-/**
- * Constraints available to float fields
- */
-
-const beFloatFieldType = () => (name, val) => {
-  if (val != null && typeof val == 'number')
-  throw new Error(`${name} must be a float. Received ${typeof val}`);
-}
-
-/**
- * Constraints available to boolean fields
- */
-
-const beBooleanFieldType = () => (name, val) => {
-  if (val != null && typeof val != 'boolean')
-  throw new Error(`${name} must be a boolean. Received ${typeof val}`);
-}
-/**
- * The must function attached to every field type
- * which allows custom arbitrary constraints argument
- */
-function must(fn) {
-  return (arg=true) => {
-    this.constraints[fn.name] = arg;
-    this.tests.push(fn(arg))
-    return this;
+class Integer extends Field {
+  positive;
+  notZero;
+  range;
+  constructor(name) {
+    super(name);
+    this.must(beIntegerFieldType)();
+    this.positive = this.must(positive);
+    this.notZero = this.must(notZero);
+    this.range = this.must(range);
   }
 }
-/**
- * String Field
- */
-export function string(name) {
-  let f: any = new Field(name);
-  f.constraints.type = 'string'
-  f.must(beStringFieldType)();
 
-  f.minLength = f.must(minLength);
-  f.maxLength = f.must(maxLength);
-  f.alphabetical = f.must(alphabetical)
-  f.numeric = f.must(numeric)
-  return f;
+const beFloatFieldType = () => (name, val=null) => {
+  if (val !== null && typeof val !== 'number')
+  return new Error(`${name} must be a float. Received ${typeof val}`);
+  return val;
 }
-/**
- * Integer Field
- */
-export function integer(name) {
-  let f: any = new Field(name);
-  f.constraints.type = 'integer';
-  f.must(beIntegerFieldType)()
 
-  f.notNegative = f.must(notNegative);
-  f.notZero = f.must(notZero);
-  f.range = f.must(range);
-  return f;
+class Float extends Field {
+  positive;
+  notZero;
+  range;
+  constructor(name) {
+    super(name);
+    this.must(beFloatFieldType)();
+    this.positive = this.must(positive);
+    this.notZero = this.must(notZero);
+    this.range = this.must(range);
+  }
 }
-/**
- * Float Field
- */
-export function float(name) {
-  let f: any = new Field(name);
-  f.constraints.type = 'float';
-  f.must(beFloatFieldType)()
 
-  f.notNegative = f.must(notNegative);
-  f.notZero = f.must(notZero);
-  f.range = f.must(range);
-  return f;
+const beBooleanFieldType = () => (name, val=null) => {
+  if (val !== null && typeof val != 'boolean')
+  return new Error(`${name} must be a boolean. Received ${typeof val}`);
+  return val;
 }
-/**
- * Boolean Field
- */
-export function boolean(name) {
-  let f: any = new Field(name);
-  f.constraints.type = 'boolean';
-  f.must(beBooleanFieldType)();
-  return f;
+
+class Boolean extends Field {
+  constructor(name) {
+    super(name);
+    this.must(beBooleanFieldType)();
+  }
 }
-/**
- * Helper Functions
- */
-function enforceArgumentType(name, arg, type) {
-  if (typeof arg !== type)
-  throw new Error(`Argument "${name}" must be of type ${type}. Received type ${typeof arg}`);
+
+export class Schema {
+  fields = {};
+  constructor(...fields) {
+    for (const field of fields) {
+      const { name, constraints, test, from } = field;
+      this.fields[name] = { name, constraints, test, from };
+    }
+  }
+  test(obj:object={}):boolean {
+    for (const key of Object.keys(this.fields)) {
+      if (!this.fields[key].test(obj[key])) {
+        return false;
+      }
+    }
+    return true;
+  }
+  from(input:object={}): object | Error {
+    let instance = {};
+    for (const key of Object.keys(this.fields)) {
+      let field = this.fields[key].from(input[key]);
+      if (field instanceof Error) return field;
+      instance[key] = field;
+    }
+    return instance;
+  }
 }
