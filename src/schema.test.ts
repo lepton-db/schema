@@ -31,6 +31,11 @@ export const tests = [
   floatFieldTypeTest,
   floatFieldNotNullTest,
   floatFieldPositiveTest,
+  floatFieldNotZeroTest,
+  floatFieldRangeTest,
+  floatFieldMustTest,
+  floatFieldMustMutateTest,
+  floatFieldChainableConstraintsTest,
   booleanFieldCreationTest,
   booleanFieldTypeTest,
   booleanFieldNotNullTest,
@@ -414,6 +419,90 @@ function floatFieldPositiveTest() {
     return e;
   }
 }
+
+function floatFieldNotZeroTest() {
+  const description = `a notZero constraint can be
+  applied to float fields, which can be checked with
+  field.test()`;
+  try {
+    let field = float('debt');
+    assert.equal(field.test(0), true);
+    field.notZero();
+    assert.equal(field.test(0), false);
+  } catch (e) {
+    return e;
+  }
+}
+
+function floatFieldRangeTest() {
+  const description = `a range constraint can be
+  applied to float fields, which can be checked with
+  field.test()`;
+  try {
+    let field = float('month');
+    assert.equal(field.test(0), true);
+    field.range([1, 2]);
+    assert.equal(field.test(0), false);
+  } catch (e) {
+    return e;
+  }
+}
+
+function floatFieldMustTest() {
+  const description = `an arbitrary constraint function
+  can be applied to float fields that accepts an arg, and
+  can be checked with field.test()`;
+  try {
+    let field = float('repetitions');
+    assert.equal(field.test(7), true);
+
+    // Custom constraint
+    const divideBy = arg => (name, val) => {
+      if (val % arg != 0)
+      return new Error(`${name} must be divisible by ${arg}`);
+      return val;
+    }
+    field.must(divideBy)(4);
+    assert.equal(field.test(7), false);
+  } catch (e) {
+    return e;
+  }
+}
+
+function floatFieldMustMutateTest() {
+  const description = `Float fields can apply
+  must() to transform the input value.`
+
+  // This will transform the input value
+  let magnitude = arg => (name, val) => Math.abs(val);
+
+  try {
+    let field = float('distance');
+    field.must(magnitude)();
+    field.positive();
+    assert.equal(field.test(-5), true);
+  } catch (e) {
+    return e;
+  }
+}
+
+function floatFieldChainableConstraintsTest() {
+  const description = `all constraints available to float 
+  fields are chainable`;
+  try {
+    assert.doesNotThrow(() => {
+      float('goal')
+        .notNull()
+        .positive()
+        .notZero()
+        .must(x => x)
+    });
+  } catch (e) {
+    return e;
+  }
+}
+
+
 
 
 
