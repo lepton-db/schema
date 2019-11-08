@@ -43,8 +43,7 @@ export const tests = [
   booleanFieldMustMutateTest,
   booleanFieldChainableConstraintsTest,
   fieldUndefinedConstraintReturnTest,
-  dataShapeTestTest,
-  dataShapeFromTest,
+  schemaFromTest,
 ];
 
 function stringFieldCreationTest() {
@@ -643,55 +642,9 @@ function fieldUndefinedConstraintReturnTest() {
   }
 }
 
-function dataShapeTestTest() {
-  const description = `Objects can be tested
-  against a Schema for validity`;
-
-  try {
-    let be = arg => (name, val) => {
-      if (val !== arg)
-      return new Error(`${name} must be "${arg}"`);
-    }
-
-    let cowboy = schema(
-      string('birthplace'),
-      string('catchphrase').notNull(),
-      string('firstname').minLength(1).must(be)('Juan Carlos'),
-      string('lastname').maxLength(12).notNull(),
-      integer('age').notNull().positive().notZero(),
-      integer('kills').positive().notZero(),
-    )
-
-    assert.equal(
-      cowboy.test({
-        birthplace: 'Rio Grande',
-        catchphrase: 'It\'s high noon',
-        firstname: 'Juan Carlos',
-        lastname: 'Riviera',
-        age: 46,
-        kills: 4,
-      }),
-      true
-    );
-
-    assert.equal(
-      cowboy.test({
-        catchphrase: 'Get along lil doggy',
-        firstname: 'Rattlesnake Bill',
-        lastname: 'Turner',
-        age: 37,
-        kills: 0,
-      }),
-      false,
-    );
-  } catch (e) {
-    return e;
-  }
-}
-
-function dataShapeFromTest() {
+function schemaFromTest() {
   const description = `Objects can be created 
-  under the enforcement of Schema.from()`;
+  under the enforcement of schema.apply()`;
 
   try {
     let be = arg => (name, val) => {
@@ -717,10 +670,9 @@ function dataShapeFromTest() {
       kills: 4,
     }
 
-    assert.deepEqual(
-      cowboy.from(input),
-      input,
-    );
+    const [output, errors] = cowboy.from(input);
+    assert.deepEqual(input, output);
+    assert.equal(errors.length, 0);
 
     let badInput = {
       catchphrase: 'Get along lil doggy',
@@ -730,16 +682,16 @@ function dataShapeFromTest() {
       kills: 0,
     }
 
-    let maybeCowboy = cowboy.from(badInput);
+    const [badOutput, badErrors] = cowboy.from(badInput);
+    assert.equal(badOutput['birthplace'], null);
+    assert.equal(badErrors.length, 2);
     assert.equal(
-      maybeCowboy instanceof Error,
-      true,
-    );
-
-    assert.equal(
-      // @ts-ignore
-      maybeCowboy.message,
+      badErrors[0].message,
       'firstname must be "Juan Carlos"',
+    );
+    assert.equal(
+      badErrors[1].message,
+      'kills must not be 0',
     );
 
   } catch (e) {

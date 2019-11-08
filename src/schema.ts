@@ -45,7 +45,7 @@ class Field {
     }
   }
 
-  // Determine if a value passes all field constraints
+  // Determine if a value fulfills field's constraints
   test(val?): boolean {
     // Run the input value through each of the constraints
     for (const constraint of this.constraints) {
@@ -62,29 +62,29 @@ class Field {
     const [typeConstraint] = this.constraints;
     if (typeConstraint(this.name, val) instanceof Error) return false;
 
-    // Success
     return true;
   }
 
-  from(val?): any {
+  // Run a value through all field constraints
+  from(val?): [any, Error[]] {
+    const errors = [];
     // Run the input value through each of the constraints
-    for (const constraint of this.constraints) {
+    this.constraints.forEach(constraint => {
       let temp = constraint(this.name, val);
 
-      // Failure
-      if (temp instanceof Error) return temp;
+      // Error objects indicate Test Failure
+      if (temp instanceof Error) return errors.push(temp);
 
       // Don't re-assign val if constraint returned undefined
       if (temp !== undefined) val = temp;
-    }
+    })
 
     // Run the first constraint (type check) once more
     const [typeConstraint] = this.constraints;
-    let typecheck = typeConstraint(this.name, val);
-    if (typecheck instanceof Error) return typecheck;
-    
-    // Success
-    return val;
+    const typeValidation = typeConstraint(this.name, val);
+    if (typeValidation instanceof Error) errors.push(typeValidation);
+
+    return [val, errors];
   }
 }
 
@@ -218,21 +218,14 @@ export class Schema {
       this.fields[name] = { name, constraints, test, from };
     }
   }
-  test(obj:object={}):boolean {
+  from(obj:object={}): [object, Error[]] {
+    const resultObj = {};
+    const resultErrors = [];
     for (const key of Object.keys(this.fields)) {
-      if (!this.fields[key].test(obj[key])) {
-        return false;
-      }
+      const [val, errors] = this.fields[key].from(obj[key]);
+      resultObj[key] = val;
+      errors.forEach(e => resultErrors.push(e));
     }
-    return true;
-  }
-  from(input:object={}): object | Error {
-    let instance = {};
-    for (const key of Object.keys(this.fields)) {
-      let field = this.fields[key].from(input[key]);
-      if (field instanceof Error) return field;
-      instance[key] = field;
-    }
-    return instance;
+    return [resultObj, resultErrors];
   }
 }
