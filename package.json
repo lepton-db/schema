@@ -18,7 +18,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^12.6.8",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "waverunner": "^0.2.4"
   },
   "dependencies": {
     "typescript": "^3.5.3"
