@@ -4,8 +4,8 @@ import {
   integer,
   float,
   boolean,
-  Schema
-} from './schema';
+  schema,
+} from './index';
 
 export const tests = [
   stringFieldCreationTest,
@@ -531,7 +531,7 @@ function dataShapeTestTest() {
       return new Error(`${name} must be "${arg}"`);
     }
 
-    let cowboy = new Schema(
+    let cowboy = schema(
       string('birthplace'),
       string('catchphrase').notNull(),
       string('firstname').minLength(1).must(be)('Juan Carlos'),
@@ -577,7 +577,7 @@ function dataShapeFromTest() {
       return new Error(`${name} must be "${arg}"`);
     }
 
-    let cowboy = new Schema(
+    let cowboy = schema(
       string('birthplace'),
       string('catchphrase').notNull(),
       string('firstname').minLength(1).must(be)('Juan Carlos'),

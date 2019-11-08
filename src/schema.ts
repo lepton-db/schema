@@ -1,6 +1,10 @@
 /**
  * Wrapping classes with functions prevents people from inheriting from them
  */
+export function schema(...args) {
+  return new Schema(...args);
+}
+
 export function string(name) {
   return new String(name);
 }
