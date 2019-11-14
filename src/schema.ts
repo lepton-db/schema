@@ -38,9 +38,9 @@ class Field {
   }
 
   // Apply custom field constraints
-  must(fn: (arg?) => any) {
-    return (arg?) => {
-      this.constraints.push(fn(arg))
+  must(fn: (...args) => any) {
+    return (...args) => {
+      this.constraints.push(fn(...args))
       return this;
     }
   }
@@ -118,6 +118,12 @@ const numeric = () => (name, val) => {
   return val;
 }
 
+const enumerated = (...args) => (name, val) => {
+  if (!args.includes(val))
+  return new Error(`Acceptable values for ${name} are: ${args.join(', ')}`);
+  return val;
+}
+
 // https://www.regular-expressions.info/email.html
 const email = () => (name, val) => {
   const pattern = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/
@@ -131,6 +137,7 @@ class String extends Field {
   maxLength;
   alphabetical;
   numeric;
+  enumerated;
   constructor(name) {
     super(name);
     this.must(beStringFieldType)();
@@ -138,6 +145,7 @@ class String extends Field {
     this.maxLength = this.must(maxLength);
     this.alphabetical = this.must(alphabetical);
     this.numeric = this.must(numeric);
+    this.enumerated = this.must(enumerated);
   }
 }
 

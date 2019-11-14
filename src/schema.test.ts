@@ -15,6 +15,7 @@ export const tests = [
   stringFieldMaxLengthTest,
   stringFieldAlphabeticalTest,
   stringFieldNumericTest,
+  stringFieldEnumeratedTest,
   stringFieldMustTest,
   stringFieldMustMutateTest,
   stringFieldChainableConstraintsTest,
@@ -143,6 +144,25 @@ function stringFieldNumericTest() {
     assert.equal(field.test('r2d2'), true);
     field.numeric();
     assert.equal(field.test('r2d2'), false);
+  } catch (e) {
+    return e;
+  }
+}
+
+function stringFieldEnumeratedTest() {
+  const description = `an enumerated constraint can be
+  applied to string fields, which can be checked with
+  field.test().`;
+
+  try {
+    let field = string('suit');
+    assert.equal(field.test('shovels'), true);
+    field.enumerated('clubs', 'spades', 'diamonds', 'hearts');
+    assert.equal(field.test('shovels'), false);
+    assert.equal(field.test('clubs'), true);
+    assert.equal(field.test('spades'), true);
+    assert.equal(field.test('diamonds'), true);
+    assert.equal(field.test('hearts'), true);
   } catch (e) {
     return e;
   }
