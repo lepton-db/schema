@@ -118,6 +118,12 @@ const numeric = () => (name, val) => {
   return val;
 }
 
+const alphanumeric = arg => (name, val) => {
+  if (false == /^[a-zA-Z0-9]+$/.test(val))
+  return new Error(`${name} must only use alphanumeric characters`);
+  return val;
+}
+
 const enumerated = (...args) => (name, val) => {
   if (!args.includes(val))
   return new Error(`Acceptable values for ${name} are: ${args.join(', ')}`);
@@ -137,6 +143,7 @@ class String extends Field {
   maxLength;
   alphabetical;
   numeric;
+  alphanumeric;
   enumerated;
   constructor(name) {
     super(name);
@@ -145,6 +152,7 @@ class String extends Field {
     this.maxLength = this.must(maxLength);
     this.alphabetical = this.must(alphabetical);
     this.numeric = this.must(numeric);
+    this.alphanumeric = this.must(alphanumeric);
     this.enumerated = this.must(enumerated);
   }
 }

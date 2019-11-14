@@ -15,6 +15,7 @@ export const tests = [
   stringFieldMaxLengthTest,
   stringFieldAlphabeticalTest,
   stringFieldNumericTest,
+  stringFieldAlphanumericTest,
   stringFieldEnumeratedTest,
   stringFieldMustTest,
   stringFieldMustMutateTest,
@@ -144,6 +145,21 @@ function stringFieldNumericTest() {
     assert.equal(field.test('r2d2'), true);
     field.numeric();
     assert.equal(field.test('r2d2'), false);
+  } catch (e) {
+    return e;
+  }
+}
+
+function stringFieldAlphanumericTest() {
+  const description = `an alphanumeric constraint can be
+  applied to string fields, which can be checked with
+  field.test()`;
+
+  try {
+    let field = string('language');
+    assert.equal(field.test('Holy sh&%!'), true);
+    field.alphanumeric();
+    assert.equal(field.test('Holy sh&%!'), false);
   } catch (e) {
     return e;
   }
