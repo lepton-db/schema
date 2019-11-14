@@ -73,7 +73,7 @@ class Field {
       let temp = constraint(this.name, val);
 
       // Error objects indicate Test Failure
-      if (temp instanceof Error) return errors.push(temp);
+      if (temp instanceof Error) return errors.push(temp.message);
 
       // Don't re-assign val if constraint returned undefined
       if (temp !== undefined) val = temp;
@@ -82,7 +82,7 @@ class Field {
     // Run the first constraint (type check) once more
     const [typeConstraint] = this.constraints;
     const typeValidation = typeConstraint(this.name, val);
-    if (typeValidation instanceof Error) errors.push(typeValidation);
+    if (typeValidation instanceof Error) errors.push(typeValidation.message);
 
     return [val, errors];
   }

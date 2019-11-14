@@ -730,11 +730,11 @@ function schemaFromTest() {
     assert.equal(badOutput['birthplace'], null);
     assert.equal(badErrors.length, 2);
     assert.equal(
-      badErrors[0].message,
+      badErrors[0],
       'firstname must be "Juan Carlos"',
     );
     assert.equal(
-      badErrors[1].message,
+      badErrors[1],
       'kills must not be 0',
     );
 
