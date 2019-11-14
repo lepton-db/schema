@@ -182,6 +182,14 @@ function stringFieldEnumeratedTest() {
   } catch (e) {
     return e;
   }
+  
+  // Empty enumerated constraints should never be valid
+  try {
+    let field = string('suit').enumerated();
+    assert.equal(field.test('shovels'), false);
+  } catch (e) {
+    return e;
+  }
 }
 
 function stringFieldMustTest() {
